@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumen Mensual</title>
+    <link rel="stylesheet" href="../../templates/navigation-bar/navigation-bar.css">
+    <link rel="stylesheet" href="../../static/monthly-overview-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="profile-container">
+<!--            <a href="profile.html" class="profile-link"> -->
+<!--                TODO: CREAR PERFIL-->
+                <img src="/images/illustration-businessman/profile-pic.jpg" alt="Foto de perfil" class="profile-image">
+<!--            </a>-->
+        </div>
+        <div class="title-container">
+            <h1>Resumen Financiero</h1>
+            <p>Análisis de ingresos y gastos</p>
+        </div>
+        <div class="date-container">
+            <span id="current-month">Marzo 2025</span>
+            <button class="calendar-btn"><i class="fas fa-calendar"></i></button>
+        </div>
+    </header>
+
+    <div class="overview-title">
+        <h2>Resumen</h2>
+    </div>
+
+    <div class="summary-cards">
+        <div class="summary-card">
+            <div class="card-icon">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <div class="card-content">
+                <div class="card-label">Balance Total</div>
+                <div class="card-value">€2,450.75</div>
+                <div class="card-trend positive">
+                    <i class="fas fa-arrow-up"></i> 15.3% respecto al mes anterior
+                </div>
+            </div>
+            <div class="card-menu">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="card-icon income-icon">
+                <i class="fas fa-arrow-down"></i>
+            </div>
+            <div class="card-content">
+                <div class="card-label">Ingresos Totales</div>
+                <div class="card-value">€3,850.00</div>
+                <div class="card-trend positive">
+                    <i class="fas fa-arrow-up"></i> 5.2% respecto al mes anterior
+                </div>
+            </div>
+            <div class="card-menu">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="card-icon expense-icon">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+            <div class="card-content">
+                <div class="card-label">Gastos Totales</div>
+                <div class="card-value">€1,399.25</div>
+                <div class="card-trend negative">
+                    <i class="fas fa-arrow-up"></i> 8.7% respecto al mes anterior
+                </div>
+            </div>
+            <div class="card-menu">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="detailed-section">
+        <div class="section-tabs">
+            <button class="tab-btn active" data-tab="income">Ingresos</button>
+            <button class="tab-btn" data-tab="expense">Gastos</button>
+        </div>
+
+        <div class="tab-content active" id="income-tab">
+            <div class="income-list">
+                <div class="income-item">
+                    <div class="income-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="income-details">
+                        <div class="income-title">Salario</div>
+                        <div class="income-date">15 Mar 2025</div>
+                    </div>
+                    <div class="income-amount">+€2,800.00</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="income-item">
+                    <div class="income-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <div class="income-details">
+                        <div class="income-title">Proyecto Freelance</div>
+                        <div class="income-date">20 Mar 2025</div>
+                    </div>
+                    <div class="income-amount">+€450.00</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 16.07%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="income-item">
+                    <div class="income-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="income-details">
+                        <div class="income-title">Devolución Hacienda</div>
+                        <div class="income-date">22 Mar 2025</div>
+                    </div>
+                    <div class="income-amount">+€320.00</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 11.43%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="income-item">
+                    <div class="income-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="income-details">
+                        <div class="income-title">Regalo Cumpleaños</div>
+                        <div class="income-date">25 Mar 2025</div>
+                    </div>
+                    <div class="income-amount">+€150.00</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 5.36%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="income-item">
+                    <div class="income-icon">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <div class="income-details">
+                        <div class="income-title">Intereses Cuenta</div>
+                        <div class="income-date">31 Mar 2025</div>
+                    </div>
+                    <div class="income-amount">+€130.00</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 4.64%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="expense-tab">
+            <div class="expense-list">
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-title">Alquiler</div>
+                        <div class="expense-date">5 Mar 2025</div>
+                    </div>
+                    <div class="expense-amount">-€850.00</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress expense-progress" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-title">Supermercado</div>
+                        <div class="expense-date">8 Mar 2025</div>
+                    </div>
+                    <div class="expense-amount">-€125.50</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress expense-progress" style="width: 14.76%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-title">Electricidad</div>
+                        <div class="expense-date">10 Mar 2025</div>
+                    </div>
+                    <div class="expense-amount">-€85.30</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress expense-progress" style="width: 10.04%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-title">Internet y Móvil</div>
+                        <div class="expense-date">12 Mar 2025</div>
+                    </div>
+                    <div class="expense-amount">-€65.99</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress expense-progress" style="width: 7.76%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-title">Restaurante</div>
+                        <div class="expense-date">18 Mar 2025</div>
+                    </div>
+                    <div class="expense-amount">-€68.75</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress expense-progress" style="width: 8.09%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-title">Transporte Público</div>
+                        <div class="expense-date">20 Mar 2025</div>
+                    </div>
+                    <div class="expense-amount">-€45.00</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress expense-progress" style="width: 5.29%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-title">Cine</div>
+                        <div class="expense-date">22 Mar 2025</div>
+                    </div>
+                    <div class="expense-amount">-€24.00</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress expense-progress" style="width: 2.82%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-title">Ropa</div>
+                        <div class="expense-date">25 Mar 2025</div>
+                    </div>
+                    <div class="expense-amount">-€89.95</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress expense-progress" style="width: 10.58%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="expense-item">
+                    <div class="expense-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-title">Gimnasio</div>
+                        <div class="expense-date">28 Mar 2025</div>
+                    </div>
+                    <div class="expense-amount">-€44.99</div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress expense-progress" style="width: 5.29%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="transactions-section">
+        <div class="section-header">
+            <h3>Transacciones Recientes</h3>
+            <button class="view-all-btn">Ver todas</button>
+        </div>
+        <div class="transactions-list">
+            <div class="transaction-item income">
+                <div class="transaction-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="transaction-details">
+                    <div class="transaction-title">Salario</div>
+                    <div class="transaction-date">15 Mar 2025</div>
+                </div>
+                <div class="transaction-amount">+€2,800.00</div>
+            </div>
+            <div class="transaction-item expense">
+                <div class="transaction-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="transaction-details">
+                    <div class="transaction-title">Alquiler</div>
+                    <div class="transaction-date">5 Mar 2025</div>
+                </div>
+                <div class="transaction-amount">-€850.00</div>
+            </div>
+            <div class="transaction-item income">
+                <div class="transaction-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="transaction-details">
+                    <div class="transaction-title">Freelance</div>
+                    <div class="transaction-date">20 Mar 2025</div>
+                </div>
+                <div class="transaction-amount">+€450.00</div>
+            </div>
+            <div class="transaction-item expense">
+                <div class="transaction-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="transaction-details">
+                    <div class="transaction-title">Supermercado</div>
+                    <div class="transaction-date">8 Mar 2025</div>
+                </div>
+                <div class="transaction-amount">-€125.50</div>
+            </div>
+            <div class="transaction-item expense">
+                <div class="transaction-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="transaction-details">
+                    <div class="transaction-title">Restaurante</div>
+                    <div class="transaction-date">18 Mar 2025</div>
+                </div>
+                <div class="transaction-amount">-€68.75</div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script src="../../static/monthly-overview-script.js"></script>
+<script src="../../templates/navigation-bar/navigation-bar.js"></script>
+<div id="navigation-container"></div>
+
+<script>
+    // Cargar el componente de navegación
+    fetch('../../templates/navigation-bar/navigation-bar.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('navigation-container').innerHTML = data;
+        });
+</script>
+</body>
+</html>
+
