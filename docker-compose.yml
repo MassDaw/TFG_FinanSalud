@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Servicio para la aplicación Spring Boot
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"  # Exponemos el puerto 8080
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/mi_base_de_datos  # URL de conexión MongoDB
+    depends_on:
+      - mongo  # Espera que el servicio de MongoDB esté listo
+    networks:
+      - app-network
+
+  # Servicio para MongoDB
+  mongo:
+    image: mongo:latest  # Usamos la última versión de MongoDB
+    volumes:
+      - mongodb_data:/data/db  # Persistencia de datos
+    ports:
+      - "27017:27017"  # Exponemos el puerto 27017 para la conexión a MongoDB
+    networks:
+      - app-network
+
+# Definir la red para que los servicios se comuniquen entre sí
+networks:
+  app-network:
+    driver: bridge
+
+# Volumen para persistencia de datos de MongoDB
+volumes:
+  mongodb_data:
