@@ -22,14 +22,14 @@ public class RestMainController {
         return "login";
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody UserDTO user) {
-        Usuario foundUser = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        if (passwordEncoder.matches(user.getPassword(), foundUser.getPassword())) {
-            return ResponseEntity.ok("Login exitoso");
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> loginUser(@RequestBody UserDTO user) {
+//        Usuario foundUser = userRepository.findByUsername(user.getUsername())
+//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+//
+//        if (passwordEncoder.matches(user.getPassword(), foundUser.getPassword())) {
+//            return ResponseEntity.ok("Login exitoso");
+//        }
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
+//    }
 }

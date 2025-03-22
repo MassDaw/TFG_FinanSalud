@@ -1,9 +1,11 @@
 package com.proyecto.tfg_finansalud.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,54 +17,62 @@ import java.time.Duration;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-@EnableWebSecurity
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   @Value("${http.recuerdameKey}") final String recuerdameKey) throws Exception {
+
         return http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register").permitAll()
+                .csrf(csrf -> csrf.disable()) // Desactiva CSRF si usas formularios tradicionales. Para APIs REST sería importante habilitar CSRF.
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/api/login").permitAll()
                         .anyRequest().authenticated()
+                        )
+                .formLogin(formLogin ->
+                        formLogin
+                                .loginPage("/login") // URL de la página de login
+                                .loginProcessingUrl("/api/login") // URL donde se procesan las solicitudes de login
+                                .permitAll() // Permitir el acceso al login sin autenticación
+                                .defaultSuccessUrl("/dashboard", true)
                 )
-                .httpBasic(withDefaults())
+                .logout(logout ->
+                        logout
+                                .logoutUrl("/logout")
+                                .permitAll()
+                )
                 .build();
+//        return http
+//                .csrf(csrf -> csrf.disable()) // Desactivar CSRF (si es necesario)
+//
+//                .formLogin(form -> form
+//                        .loginPage("/login") // Página de login (la página que se mostrará al usuario)
+//                        .loginProcessingUrl("/api/login") // URL a la que se enviará el formulario de login
+//                        .defaultSuccessUrl("/dashboard", true) // Página de destino después de un login exitoso
+//                        .permitAll() // Permitir acceso sin autenticación al login
+//                )
+//                .rememberMe(rememberMe -> rememberMe
+//                        .rememberMeParameter("recuerdame") // Parámetro para el checkbox "Recordarme"
+//                        .rememberMeCookieName("yo-soy-aquel") // Nombre de la cookie
+//                        .tokenValiditySeconds((int) Duration.ofDays(180).getSeconds()) // Validez del token
+//                        .key(recuerdameKey)) // Clave para las cookies
+//                .logout(out -> out
+//                        .logoutUrl("/logout") // URL para logout
+//                        .logoutSuccessUrl("/usuario/login?logout") // URL de redirección después de logout
+//                        .permitAll() // Permitir logout sin autenticación
+//                )
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/login", "/register", "/home", "/api/login").permitAll() // Permitir ciertas rutas sin autenticación
+//                        .anyRequest().authenticated() // Requiere autenticación para cualquier otra ruta
+//                )
+//                .httpBasic(withDefaults()) // Autenticación básica (si la necesitas)
+//                .build();
+
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-
-    @Bean
-    public SecurityFilterChain formLoginFilterChain(HttpSecurity http,
-                                                    @Value("${http.recuerdameKey}") final String recuerdameKey) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/usuario/**", "/webjars/**","/css/**").permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/usuario/login")
-                        .defaultSuccessUrl("/index", true)
-                        .permitAll())
-//                .oauth2Login(oauth -> oauth
-//                        .loginPage("/usuario/login")
-//                        .defaultSuccessUrl("/index", true)
-//                        .userInfoEndpoint(endpoint -> endpoint.userService(oauth2UserService)))
-                .rememberMe(rememberMe -> rememberMe
-                        .rememberMeParameter("recuerdame") // nombre del checkbox del formulario
-                        .rememberMeCookieName("yo-soy-aquel")
-                        .tokenValiditySeconds((int) Duration.ofDays(180).getSeconds()) // validez del token
-                        .key(recuerdameKey)) // cookies will survive if restarted
-                .logout(out -> out
-                        .logoutUrl("/usuario/logout")
-                        .logoutSuccessUrl("/usuario/login?logout").permitAll());
-
-        return http.build();
-
+        return new BCryptPasswordEncoder(); // Utiliza BCryptPasswordEncoder para el encriptado de contraseñas
     }
 }
