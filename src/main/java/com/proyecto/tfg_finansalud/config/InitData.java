@@ -25,5 +25,16 @@ public class InitData {
     final ProfileService profileService;
     final UserService userService;
 
-
+//    @EventListener
+//    public void onApplicationEvent(ApplicationReadyEvent event) {
+//        initData();
+//    }
+//    private void initData() {
+//        Usuario usuario = Usuario.builder().username("pao").email("pao@pao.com").password("pao").registrationDate(LocalDate.now()).build();
+//
+//        Profile profile = Profile.builder().name("admin").build();
+//
+//        profileService.save(profile);
+//        userService.save(usuario);
+//    }
 }
