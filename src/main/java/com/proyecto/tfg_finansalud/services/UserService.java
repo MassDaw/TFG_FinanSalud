@@ -21,7 +21,7 @@ public class UserService {
 
     public void save(Usuario user) throws Exception {
         Optional<Usuario> usuario = userRepository.findByUsername(user.getUsername());
-        if (usuario.isEmpty()) {
+        if (usuario.isPresent()) {
             throw new Exception("Usuario ya existe");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));

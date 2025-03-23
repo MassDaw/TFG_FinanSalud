@@ -35,7 +35,7 @@ public class InitData {
         try {
             userService.save(usuario);
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println("Error al registrar el usuario");
         }
 
     }
