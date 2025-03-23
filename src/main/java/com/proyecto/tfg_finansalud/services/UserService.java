@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -18,7 +19,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void save(Usuario user) {
+    public void save(Usuario user) throws Exception {
+        Optional<Usuario> usuario = userRepository.findByUsername(user.getUsername());
+        if (usuario.isEmpty()) {
+            throw new Exception("Usuario ya existe");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }

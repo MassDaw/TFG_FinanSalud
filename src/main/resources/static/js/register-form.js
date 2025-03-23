@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(data => {
                 if (data.success) {
                     alert("Registro exitoso. Ahora puedes iniciar sesión.");
-                    window.location.href = "../user_login/user_login.html";
+                    window.location.href = "/login";
                 } else {
                     alert(data.message || "Ocurrió un error al registrarse.");
                 }

@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .formLogin(formLogin ->
                         formLogin
                                 .loginPage("/login") // URL de la página de login
-                                .loginProcessingUrl("/api/login") // URL donde se procesan las solicitudes de login
+                                .loginProcessingUrl("/api/login") // URL donde se procesan las solicitudes de loginnnn
                                 .permitAll() // Permitir el acceso al login sin autenticación
                                 .defaultSuccessUrl("/dashboard", true)
                 )
