@@ -4,8 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = document.getElementById("password");
     const usernameError = document.getElementById("username-error");
     const passwordError = document.getElementById("password-error");
-    const correoInput = document.getElementById("correo");
-    const correoError = document.getElementById("correo-error");
 
     // Validación del formulario
     loginForm.addEventListener("submit", (event) => {

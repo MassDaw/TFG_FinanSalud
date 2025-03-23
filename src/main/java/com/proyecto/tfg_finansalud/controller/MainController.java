@@ -23,4 +23,14 @@ public class MainController {
         return "/dashboard/dashboard";
     }
 
+    @GetMapping("/navigation-bar")
+    public String getNavigationBar() {
+        return "/navigation-bar/navigation-bar";
+    }
+
+    @GetMapping("/monthly-overview")
+    public String getMonthlyOverview() {
+        return "/overview/monthly-overview";
+    }
+
 }

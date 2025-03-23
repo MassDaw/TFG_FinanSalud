@@ -390,7 +390,7 @@
 
 <script>
     // Cargar el componente de navegación
-    fetch('../../templates/navigation-bar/navigation-bar.html')
+    fetch('/navigation-bar')
         .then(response => response.text())
         .then(data => {
             document.getElementById('navigation-container').innerHTML = data;
