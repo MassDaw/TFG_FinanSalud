@@ -17,10 +17,6 @@ public class RestMainController {
         return "index";
     }
 
-    @GetMapping("/register")
-    public String register(Model model) {
-        return "login";
-    }
 
 //    @PostMapping("/login")
 //    public ResponseEntity<?> loginUser(@RequestBody UserDTO user) {
