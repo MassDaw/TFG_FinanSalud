@@ -45,6 +45,15 @@ public class RestMainController {
 
     }
 
+//    @GetMapping("/allBudget")
+//    public ResponseEntity<?> getBudget() {
+//
+//
+//        return ResponseEntity.status(HttpStatus.CREATED);
+//    }
+
+
+
 //    @PostMapping("/login")
 //    public ResponseEntity<?> loginUser(@RequestBody UserDTO user) {
 //        Usuario foundUser = userRepository.findByUsername(user.getUsername())

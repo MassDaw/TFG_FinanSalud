@@ -12,6 +12,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Configuration
@@ -27,9 +30,12 @@ public class InitData {
         initData();
     }
     private void initData() {
-        Usuario usuario = Usuario.builder().username("pao").email("pao@pao.com").password("pao").registrationDate(LocalDate.now()).build();
-
         Profile profile = Profile.builder().name("admin").build();
+        Set<Profile> profiles = new HashSet<>();
+        profiles.add(profile);
+        Usuario usuario = Usuario.builder().username("pao").email("pao@pao.com").password("pao").registrationDate(LocalDate.now()).profiles(profiles).build();
+
+
 
         profileService.save(profile);
         try {

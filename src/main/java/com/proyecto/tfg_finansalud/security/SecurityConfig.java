@@ -20,7 +20,8 @@ public class SecurityConfig {
 
         return http
                 .csrf(csrf -> csrf.disable()) // Desactiva CSRF si usas formularios tradicionales. Para APIs REST sería importante habilitar CSRF.
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/api/login","/register", "/css/**" ,"/js/**" ,"/api/register").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/api/login",
+                                        "/register", "/css/**" ,"/js/**" ,"/api/register").permitAll()
                         .anyRequest().authenticated()
                         )
                 .formLogin(formLogin ->
