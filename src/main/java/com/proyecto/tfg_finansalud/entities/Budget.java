@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Getter
 @Setter
-@Document(collection = "User")
+@Document(collection = "Budget")
 public class Budget {
     @Id
     private String id;
