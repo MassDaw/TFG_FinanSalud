@@ -37,11 +37,11 @@ public class InitData {
         Usuario usuario = Usuario.builder().username("pao").email("pao@pao.com").password("pao").registrationDate(LocalDate.now()).profiles(profiles).build();
 
         List<Budget> budgets = Arrays.asList(
-                Budget.builder().color("red").name("entretenimiento").budget(400.0).budgetCount(200.1).build(),
-                Budget.builder().color("blue").name("alimentación").budget(300.0).budgetCount(250.60).build()
+                Budget.builder().name("entretenimiento").budget(400.0).budgetCount(200.1).color("red").build(),
+                Budget.builder().name("alimentación").budget(300.0).budgetCount(250.60).color("blue").build()
         );
         usuario.setBudgets(budgets);
-//        budgetService.saveAll(budgets);
+        //budgetService.saveAll(budgets);
 
 
 

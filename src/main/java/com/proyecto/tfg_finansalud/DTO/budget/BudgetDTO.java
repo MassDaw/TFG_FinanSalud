@@ -14,4 +14,5 @@ public class BudgetDTO {
     private String description; //pc
     private Double budget;
     private Double budgetCount;
+    private String color;
 }
