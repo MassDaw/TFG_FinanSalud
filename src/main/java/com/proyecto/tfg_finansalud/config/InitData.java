@@ -1,8 +1,10 @@
 package com.proyecto.tfg_finansalud.config;
 
 
+import com.proyecto.tfg_finansalud.entities.Budget;
 import com.proyecto.tfg_finansalud.entities.Profile;
 import com.proyecto.tfg_finansalud.entities.Usuario;
+import com.proyecto.tfg_finansalud.services.BudgetService;
 import com.proyecto.tfg_finansalud.services.ProfileService;
 import com.proyecto.tfg_finansalud.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +14,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Configuration
@@ -24,6 +24,7 @@ public class InitData {
 
     final ProfileService profileService;
     final UserService userService;
+    final BudgetService budgetService;
 
     @EventListener
     public void onApplicationEvent(ApplicationReadyEvent event) {
@@ -34,6 +35,13 @@ public class InitData {
         Set<Profile> profiles = new HashSet<>();
         profiles.add(profile);
         Usuario usuario = Usuario.builder().username("pao").email("pao@pao.com").password("pao").registrationDate(LocalDate.now()).profiles(profiles).build();
+
+        List<Budget> budgets = Arrays.asList(
+                Budget.builder().color("red").name("entretenimiento").budget(400.0).budgetCount(200.1).build(),
+                Budget.builder().color("blue").name("alimentación").budget(300.0).budgetCount(250.60).build()
+        );
+        usuario.setBudgets(budgets);
+//        budgetService.saveAll(budgets);
 
 
 

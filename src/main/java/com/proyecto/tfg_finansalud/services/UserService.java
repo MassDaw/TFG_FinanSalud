@@ -1,8 +1,11 @@
 package com.proyecto.tfg_finansalud.services;
 
+import com.proyecto.tfg_finansalud.entities.Budget;
 import com.proyecto.tfg_finansalud.entities.Usuario;
 import com.proyecto.tfg_finansalud.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +29,23 @@ public class UserService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    public List<Budget> getBudget() {
+
+        List<Budget>  x = userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets();
+        System.out.println("x");
+        return x;
+    }
+
+    //obtener nombre de usuario autenticado
+    public String getAuthenticatedUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            return principal.toString(); // Si el principal es solo un string (caso raro)
+        }
     }
 }
