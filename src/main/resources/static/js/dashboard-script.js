@@ -22,7 +22,7 @@ function setupCurrentDate() {
 // Cargar presupuestos desde el archivo JSON
 async function loadBudgets() {
     try {
-        const response = await fetch("/budgets.json")
+        const response = await fetch("/get/budget")
         if (!response.ok) {
             throw new Error("Error al cargar los presupuestos")
         }
@@ -53,12 +53,20 @@ function displayBudgets() {
 
     // Crear elementos para cada presupuesto
     budgets.forEach((budget) => {
+        // Asegurarse de que budgetCount existe y es un número
+        if (budget.budgetCount === undefined || budget.budgetCount === null) {
+            budget.budgetCount = 0
+        }
         const percentage = budget.budget > 0 ? ((budget.budgetCount / budget.budget) * 100).toFixed(1) : 0
 
         const budgetElement = document.createElement("div")
         budgetElement.className = "budget-item"
         budgetElement.dataset.name = budget.name
 
+        // Asegurarse de que el color existe
+        if (!budget.color) {
+            budget.color = getRandomColor(budget.name)
+        }
         budgetElement.innerHTML = `
             <div class="budget-header">
                 <h3>${budget.name}</h3>
