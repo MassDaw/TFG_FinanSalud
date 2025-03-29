@@ -113,7 +113,6 @@ function getRandomColor(name) {
         transporte: "#FF5722", // Naranja
         salud: "#E91E63", // Rosa
         educacion: "#9C27B0", // Púrpura
-        educación: "#9C27B0",
         hogar: "#795548", // Marrón
         vivienda: "#795548",
         mascotas: "#607D8B", // Gris azulado
@@ -145,7 +144,6 @@ function getRandomColor(name) {
         color += ("00" + value.toString(16)).slice(-2);
     }
 
-
     return color
 }
 
@@ -153,7 +151,33 @@ function getRandomColor(name) {
 function openAddModal() {
     addModal.style.display = "block"
     document.getElementById("amount").value = ""
-    document.getElementById("category").selectedIndex = 0
+
+    // Actualizar el selector de categorías
+    const categorySelect = document.getElementById("category")
+    categorySelect.innerHTML = "" // Limpiar opciones existentes
+
+    // Lista de categorías predefinidas
+    const categoriasPredefinidas = [
+        "Alimentación",
+        "Ocio",
+        "Servicios",
+        "Transporte",
+        "Salud",
+        "Educación",
+        "Hogar",
+        "Mascotas",
+        "Otros",
+    ]
+
+    // Añadir categorías predefinidas
+    categoriasPredefinidas.forEach((categoria) => {
+        const option = document.createElement("option")
+        option.value = categoria
+        option.textContent = categoria
+        categorySelect.appendChild(option)
+    })
+
+    categorySelect.selectedIndex = 0
 }
 
 // Abrir modal para editar presupuesto
@@ -164,30 +188,23 @@ function openEditModal(name) {
     currentBudgetId = name
     document.getElementById("edit-amount").value = budget.budget
 
-    // Intentar seleccionar la categoría correcta
+    // Actualizar el selector de categorías para mostrar solo los presupuestos existentes
     const categorySelect = document.getElementById("edit-category")
-    const normalizedName = name
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
+    categorySelect.innerHTML = "" // Limpiar opciones existentes
 
-    let categoryFound = false
+    // Añadir solo las categorías existentes
+    budgets.forEach((budget) => {
+        const option = document.createElement("option")
+        option.value = budget.name
+        option.textContent = budget.name
+        categorySelect.appendChild(option)
+    })
+
+    // Seleccionar la categoría actual
     for (let i = 0; i < categorySelect.options.length; i++) {
-        const optionValue = categorySelect.options[i].value
-        if (normalizedName.includes(optionValue)) {
+        if (categorySelect.options[i].value === name) {
             categorySelect.selectedIndex = i
-            categoryFound = true
             break
-        }
-    }
-
-    if (!categoryFound) {
-        // Si no se encuentra la categoría, seleccionar "otros"
-        for (let i = 0; i < categorySelect.options.length; i++) {
-            if (categorySelect.options[i].value === "otros") {
-                categorySelect.selectedIndex = i
-                break
-            }
         }
     }
 
@@ -208,6 +225,25 @@ function addBudget(event) {
     const categorySelect = document.getElementById("category")
     const categoryText = categorySelect.options[categorySelect.selectedIndex].text
     const amount = Number.parseFloat(document.getElementById("amount").value)
+
+    // Verificar si ya existe un presupuesto con este nombre
+    const existingBudget = budgets.find((b) => b.name === categoryText)
+    if (existingBudget) {
+        // Preguntar al usuario si desea modificar el presupuesto existente
+        if (
+            confirm(
+                `Ya existe un presupuesto para "${categoryText}" con un valor de ${existingBudget.budget.toFixed(2)} €. ¿Desea modificarlo?`,
+            )
+        ) {
+            // Si el usuario confirma, abrir el modal de edición para este presupuesto
+            closeModals()
+            openEditModal(categoryText)
+            return
+        } else {
+            // Si el usuario cancela, no hacer nada
+            return
+        }
+    }
 
     // Generar un color aleatorio para el nuevo presupuesto
     const color = getRandomColor(categoryText)
@@ -315,5 +351,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     })
 })
-
 
