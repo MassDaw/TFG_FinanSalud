@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Entretenimiento",
+    "budget": 200.00,
+    "budgetCount": 120.00,
+    "color": "#212121"
+  },
+  {
+    "name": "Alimentos",
+    "budget": 500.00,
+    "budgetCount": 350.00,
+    "color": "#FF5733"
+  },
+  {
+    "name": "Transporte",
+    "budget": 150.00,
+    "budgetCount": 85.00,
+    "color": "#33FF57"
+  },
+  {
+    "name": "Salud",
+    "budget": 300.00,
+    "budgetCount": 210.00,
+    "color": "#339FFF"
+  },
+  {
+    "name": "Vivienda",
+    "budget": 1000.00,
+    "budgetCount": 950.00,
+    "color": "#FF33A6"
+  },
+  {
+    "name": "Educación",
+    "budget": 600.00,
+    "budgetCount": 450.00,
+    "color": "#F5D300"
+  }
+]
