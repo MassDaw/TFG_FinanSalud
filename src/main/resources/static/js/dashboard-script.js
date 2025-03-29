@@ -22,7 +22,7 @@ function setupCurrentDate() {
 // Cargar presupuestos desde el archivo JSON
 async function loadBudgets() {
     try {
-        const response = await fetch("/budgets.json")
+        const response = await fetch("/get/budget")
         if (!response.ok) {
             throw new Error("Error al cargar los presupuestos")
         }
