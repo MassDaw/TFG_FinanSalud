@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - FinanSalud</title>
+    <link rel="stylesheet" href="/css/profile-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="profile-container">
+        <!-- Sección de perfil -->
+        <div class="profile-header">
+            <div class="profile-image-container">
+                <img src="/profile-pic.jpg" alt="Foto de perfil" class="profile-image">
+            </div>
+            <div class="profile-info">
+                <h1 class="profile-name">Paolo Idrogas</h1>
+                <p class="profile-title">Programador</p>
+            </div>
+            <button class="edit-profile-btn">
+                <i class="fas fa-pencil-alt"></i>
+            </button>
+        </div>
+
+        <!-- Sección de estadísticas -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3>Has ahorrado</h3>
+                <p class="stat-amount">$254,24</p>
+                <p class="stat-period">este mes</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total ahorrado</h3>
+                <p class="stat-amount">$2554,24</p>
+            </div>
+        </div>
+
+        <!-- Sección de menú -->
+        <div class="menu-container">
+            <a href="#" class="menu-item">
+                <i class="fas fa-star"></i>
+                <span>Favoritos</span>
+            </a>
+            <a href="index.html" class="menu-item">
+                <i class="fas fa-chart-pie"></i>
+                <span>Presupuestos</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Información</span>
+            </a>
+            <a href="#" class="menu-item logout">
+                <i class="fas fa-power-off"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="js/profile-script.js"></script>
+</body>
+</html>
+

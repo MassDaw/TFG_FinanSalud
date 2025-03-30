@@ -1,5 +1,6 @@
 package com.proyecto.tfg_finansalud.DTO.budget;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,4 +16,5 @@ public class BudgetDTO {
     private Double budget;
     private Double budgetCount;
     private String color;
+
 }

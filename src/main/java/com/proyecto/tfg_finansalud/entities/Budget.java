@@ -27,4 +27,5 @@ public class Budget {
     private Integer notiPorcentaje;
 
     private List<Item> items;
+
 }

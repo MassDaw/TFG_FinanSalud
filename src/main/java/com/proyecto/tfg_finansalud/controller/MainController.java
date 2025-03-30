@@ -33,4 +33,9 @@ public class MainController {
         return "/overview/monthly-overview";
     }
 
+    @GetMapping("/profile")
+    public String getProfile() {
+        return "/profile/profile";
+    }
+
 }
