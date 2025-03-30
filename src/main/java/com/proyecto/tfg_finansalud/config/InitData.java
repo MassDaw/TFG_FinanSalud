@@ -41,7 +41,7 @@ public class InitData {
                 Budget.builder().name("alimentación").budget(300.0).budgetCount(250.60).color("blue").build()
         );
         usuario.setBudgets(budgets);
-        budgetService.saveAll(budgets);
+        //budgetService.saveAll(budgets);
 
 
 

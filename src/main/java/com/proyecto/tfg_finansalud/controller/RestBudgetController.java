@@ -27,6 +27,7 @@ public class RestBudgetController {
     @GetMapping("/budget")
     public ResponseEntity<List<BudgetDTO>> budget() {
         try {
+            System.out.println(budgetMapper.toDTO(userService.getBudget()));
             return ResponseEntity.ok(
                     budgetMapper.toDTO(userService.getBudget())
             );

@@ -34,7 +34,6 @@ public class UserService {
     public List<Budget> getBudget() {
 
         List<Budget>  x = userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets();
-        System.out.println("x");
         return x;
     }
 
