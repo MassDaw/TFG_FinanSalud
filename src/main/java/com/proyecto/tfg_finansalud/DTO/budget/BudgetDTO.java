@@ -15,4 +15,6 @@ public class BudgetDTO {
     private Double budget;
     private Double budgetCount;
     private String color;
+
+
 }

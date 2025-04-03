@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public List<Usuario> getAll() {
-        return userRepository.findAll();
-    }
+
 
     public void save(Usuario user) throws Exception {
         Optional<Usuario> usuario = userRepository.findByUsername(user.getUsername());
@@ -32,10 +32,42 @@ public class UserService {
     }
 
     public List<Budget> getBudget() {
-
-        List<Budget>  x = userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets();
-        return x;
+        return userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets();
     }
+
+
+    public void userNewBudget(Budget budget) throws Exception {
+
+        Optional<Usuario> user = userRepository.findByUsername(getAuthenticatedUsername());
+        if (user.isPresent()) {
+            user.get().getBudgets().add(budget);
+            userRepository.save(user.get());
+        }
+        else {
+            throw new Exception("Usuario no encontrado");
+        }
+    }
+
+    public void userDeleteBudget(String budgetName) throws Exception {
+
+        try {
+            Optional<Usuario> user = userRepository.findByUsername(getAuthenticatedUsername());
+            if (user.isPresent()) {
+                //el budget borrado debe coincidir con el NOMBRE Y FECHA ACTUAL PARA QUE NO SE ELIMINE REGISTROS ANTERIORES
+                user.get().getBudgets().removeIf( a -> {
+                   boolean nombre = a.getName().equals(budgetName);
+                   boolean yearaMonth = a.getYearMonth().equals(YearMonth.now());
+                   return nombre && yearaMonth;
+                });
+                userRepository.save(user.get());
+            }
+        }catch (Exception e){
+            throw new Exception("Usuario no encontrado");
+        }
+
+    }
+
+
 
     //obtener nombre de usuario autenticado
     public String getAuthenticatedUsername() {
@@ -47,4 +79,5 @@ public class UserService {
             return principal.toString(); // Si el principal es solo un string (caso raro)
         }
     }
+
 }

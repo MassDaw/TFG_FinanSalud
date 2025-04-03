@@ -16,24 +16,45 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/get")
+@RequestMapping("/budget")
 @Slf4j
 public class RestBudgetController {
 
     private final UserService userService;
     private final BudgetMapper budgetMapper;
+    private final BudgetService budgetService;
 
 
-    @GetMapping("/budget")
+    @GetMapping("/getAll")
     public ResponseEntity<List<BudgetDTO>> budget() {
         try {
-            System.out.println(budgetMapper.toDTO(userService.getBudget()));
             return ResponseEntity.ok(
-                    budgetMapper.toDTO(userService.getBudget())
+                    budgetMapper.toDTOList(userService.getBudget())
             );
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+    @PostMapping("/new")
+    public ResponseEntity<?> newBudget(@RequestBody BudgetDTO budgetDTO) {
+        try {
+            Budget budget = budgetMapper.toEntity(budgetDTO);
+            budgetService.save(budget);
+            userService.userNewBudget(budget);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    @DeleteMapping("detele")
+    public ResponseEntity<?> deleteBudget(@RequestBody String budgetName) {
+        try{
+            userService.userDeleteBudget(budgetName);
+
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

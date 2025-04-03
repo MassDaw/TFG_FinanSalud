@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Data
@@ -23,9 +25,12 @@ public class Budget {
     private Double budget;
     private Double budgetCount;
     private String color;
+    private Integer month;
+    private LocalDate yearMonth;
 
     private Integer notiPorcentaje;
 
     private List<Item> items;
+
 
 }

@@ -22,7 +22,7 @@ function setupCurrentDate() {
 // Cargar presupuestos desde el archivo JSON
 async function loadBudgets() {
     try {
-        const response = await fetch("/get/budget")
+        const response = await fetch("/budget/getAll")
         if (!response.ok) {
             throw new Error("Error al cargar los presupuestos")
         }
@@ -234,6 +234,7 @@ function addBudget(event) {
     const categoryText = categorySelect.options[categorySelect.selectedIndex].text
     const amount = Number.parseFloat(document.getElementById("amount").value)
 
+
     // Verificar si ya existe un presupuesto con este nombre
     const existingBudget = budgets.find((b) => b.name === categoryText)
     if (existingBudget) {
@@ -265,7 +266,21 @@ function addBudget(event) {
 
     // Añadir el nuevo presupuesto al array
     budgets.push(newBudget)
-
+    fetch('/budget/new', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: categoryText,
+            budget: amount,
+            budgetCount: 0, // Inicialmente no hay gasto
+            color: color,
+        })
+    })
+        .then(response => response.json())
+        .then(data => console.log('Respuesta:', data))
+        .catch(error => console.error('Error:', error));
     // Actualizar la interfaz
     displayBudgets()
     closeModals()

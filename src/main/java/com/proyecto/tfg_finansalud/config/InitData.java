@@ -14,6 +14,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.*;
 
 
@@ -37,11 +38,11 @@ public class InitData {
         Usuario usuario = Usuario.builder().username("pao").email("pao@pao.com").password("pao").registrationDate(LocalDate.now()).profiles(profiles).build();
 
         List<Budget> budgets = Arrays.asList(
-                Budget.builder().name("entretenimiento").budget(400.0).budgetCount(200.1).color("red").build(),
-                Budget.builder().name("alimentación").budget(300.0).budgetCount(250.60).color("blue").build()
+                Budget.builder().name("entretenimiento").budget(400.0).budgetCount(200.1).color("red").yearMonth(YearMonth.now().atDay(1)).build(),
+                Budget.builder().name("alimentación").budget(300.0).budgetCount(250.60).color("blue").yearMonth(YearMonth.now().atDay(1)).build()
         );
         usuario.setBudgets(budgets);
-        //budgetService.saveAll(budgets);
+        budgetService.saveAll(budgets);
 
 
 

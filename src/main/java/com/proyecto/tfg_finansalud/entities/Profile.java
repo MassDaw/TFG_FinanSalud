@@ -16,5 +16,5 @@ public class Profile {
     @Id
     private String id;
     private String name;
-    private Set<Usuario> users;
+    private Set<Usuario> user;
 }

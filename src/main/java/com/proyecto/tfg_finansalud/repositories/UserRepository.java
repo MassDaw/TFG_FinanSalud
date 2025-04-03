@@ -16,4 +16,7 @@ public interface UserRepository extends MongoRepository<Usuario, String> {
     @Query("{'username': ?#{#authentication.principal.username}}")
     Optional<Usuario> findUser();
 
+
+    @Query("{ 'username': ?0, '$push': { 'budgets': ?1 } }")
+    void addBudget(String username, Budget budget);
 }

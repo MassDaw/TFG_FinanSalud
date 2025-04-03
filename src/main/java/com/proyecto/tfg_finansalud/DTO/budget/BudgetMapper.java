@@ -11,8 +11,8 @@ import java.util.List;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED
 )
 public interface BudgetMapper {
-    Budget toDTO(BudgetDTO budgetDTO);
-    BudgetDTO toEntity(Budget budget);
-    List<Budget> toEntity(List<BudgetDTO> budgetDTOList);
-    List<BudgetDTO> toDTO(List<Budget> budgetList);
+    Budget toEntity(BudgetDTO budgetDTO);
+    BudgetDTO toDTO(Budget budget);
+    List<Budget> toEntityList(List<BudgetDTO> budgetDTOList);
+    List<BudgetDTO> toDTOList(List<Budget> budgetList);
 }
