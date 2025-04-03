@@ -294,18 +294,36 @@ function updateBudget(event) {
 }
 
 // Eliminar presupuesto
-function deleteBudget(name) {
+async function deleteBudget(name) {
     if (!confirm("¿Estás seguro de que quieres eliminar este presupuesto?")) {
-        return
+        return;
     }
 
-    // Filtrar el presupuesto a eliminar
-    budgets = budgets.filter((b) => b.name !== name)
+    try {
+        const response = await fetch("/budget/delete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name })
+        });
 
-    // Actualizar la interfaz
-    displayBudgets()
-    showNotification("Presupuesto eliminado correctamente", "success")
+        const result = await response.json();
+
+        if (response.ok) {
+            // Filtrar el presupuesto a eliminar si la respuesta es exitosa
+            budgets = budgets.filter((b) => b.name !== name);
+            displayBudgets();
+            showNotification("Presupuesto eliminado correctamente", "success");
+        } else {
+            showNotification(`Error: ${result.message}`, "error");
+        }
+    } catch (error) {
+        console.error("Error al eliminar el presupuesto:", error);
+        showNotification("Hubo un problema al eliminar el presupuesto", "error");
+    }
 }
+
 
 // Mostrar notificación
 function showNotification(message, type = "info") {
