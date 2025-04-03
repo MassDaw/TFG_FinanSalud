@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
 
 
     public void save(Usuario user) throws Exception {
@@ -48,23 +46,27 @@ public class UserService {
         }
     }
 
-    public void userDeleteBudget(String budgetName) throws Exception {
-
+    public String userDeleteBudgetGetID(String budgetName) throws Exception {
+        System.out.println(budgetName);
         try {
-            Optional<Usuario> user = userRepository.findByUsername(getAuthenticatedUsername());
+            Optional<Usuario> user = userRepository.findByUsername((getAuthenticatedUsername()));
+            List<Budget> y = user.get().getBudgets();
+            System.out.println(y);
             if (user.isPresent()) {
                 //el budget borrado debe coincidir con el NOMBRE Y FECHA ACTUAL PARA QUE NO SE ELIMINE REGISTROS ANTERIORES
-                user.get().getBudgets().removeIf( a -> {
-                   boolean nombre = a.getName().equals(budgetName);
-                   boolean yearaMonth = a.getYearMonth().equals(YearMonth.now());
-                   return nombre && yearaMonth;
-                });
+                Optional<Budget> budget = user.get().getBudgets().stream()
+                        .filter(a -> a.getName().equals(budgetName) && a.getYearMonth().equals(YearMonth.now().atDay(1)))
+                        .findFirst();
+
+                System.out.println(budget.get().getId());
+                user.get().getBudgets().remove(budget.get());
                 userRepository.save(user.get());
+                return budget.get().getId();
             }
         }catch (Exception e){
             throw new Exception("Usuario no encontrado");
         }
-
+        return null;
     }
 
 

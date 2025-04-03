@@ -316,7 +316,7 @@ async function deleteBudget(name) {
 
     try {
         const response = await fetch("/budget/delete", {
-            method: "POST",
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
             },

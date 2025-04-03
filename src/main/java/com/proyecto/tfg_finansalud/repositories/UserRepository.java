@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends MongoRepository<Usuario, String> {
-    Optional<Usuario> findByUsername(String username);
 
 
     @Query("{'username': ?#{#authentication.principal.username}}")
@@ -19,4 +18,6 @@ public interface UserRepository extends MongoRepository<Usuario, String> {
 
     @Query("{ 'username': ?0, '$push': { 'budgets': ?1 } }")
     void addBudget(String username, Budget budget);
+
+    Optional<Usuario> findByUsername(String username);
 }

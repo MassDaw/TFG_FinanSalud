@@ -26,4 +26,10 @@ public class BudgetService {
         budget.setYearMonth(YearMonth.now().atDay(1));
         return budgetRepository.save(budget);
     }
+
+    public void removeID(String id) {
+        budgetRepository.deleteById(id);
+    }
+
+
 }

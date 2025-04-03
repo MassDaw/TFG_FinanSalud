@@ -47,11 +47,12 @@ public class RestBudgetController {
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-    @DeleteMapping("detele")
-    public ResponseEntity<?> deleteBudget(@RequestBody String budgetName) {
-        try{
-            userService.userDeleteBudget(budgetName);
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteBudget(@RequestBody BudgetDTO budgetDTO) {
+        try{
+             String id = userService.userDeleteBudgetGetID(budgetDTO.getName());
+             budgetService.removeID(id);
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
