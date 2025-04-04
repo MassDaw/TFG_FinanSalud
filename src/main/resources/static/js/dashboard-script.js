@@ -339,6 +339,41 @@ async function deleteBudget(name) {
     }
 }
 
+async function editBudget(name, newBudgetAmount) {
+    try {
+        const response = await fetch("/budget/edit", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                budget: newBudgetAmount // este es el nuevo monto
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            // Actualiza el presupuesto en la lista local
+            budgets = budgets.map((b) =>
+                b.name === name ? { ...b, budget: newBudgetAmount } : b
+            );
+            displayBudgets();
+            showNotification("Presupuesto actualizado correctamente", "success");
+        } else {
+            showNotification(`Error: ${result.message}`, "error");
+        }
+    } catch (error) {
+        console.error("Error al actualizar el presupuesto:", error);
+        showNotification("Hubo un problema al actualizar el presupuesto", "error");
+    }
+}
+
+
+
+
+
 
 // Mostrar notificación
 function showNotification(message, type = "info") {
