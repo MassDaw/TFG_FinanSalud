@@ -300,11 +300,13 @@ function updateBudget(event) {
     if (index !== -1) {
         // Actualizar solo el monto del presupuesto
         budgets[index].budget = amount
+        editBudget(budgets[index].name , amount)
     }
 
     // Actualizar la interfaz
     displayBudgets()
     closeModals()
+
     showNotification("Presupuesto actualizado correctamente", "success")
 }
 

@@ -25,6 +25,7 @@ public class BudgetService {
         budgetRepository.saveAll(budgets);
     }
 
+    // todo budget que se cree, tendra como fecha el mes y año en curso
     public Budget save(Budget budget) {
         budget.setYearMonth(YearMonth.now().atDay(1));
         return budgetRepository.save(budget);
@@ -33,6 +34,7 @@ public class BudgetService {
     public void removeID(String id) {
         budgetRepository.deleteById(id);
     }
+
     public void updateBudget(String id, Double newBudget) {
             Optional<Budget> budget = budgetRepository.findById(id);
             System.out.println(budget);
