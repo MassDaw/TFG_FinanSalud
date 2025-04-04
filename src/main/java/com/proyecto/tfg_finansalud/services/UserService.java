@@ -46,7 +46,7 @@ public class UserService {
         }
     }
 
-    public String returnBudgetIDfromUser(String budgetName) throws Exception {
+    public String returnBudgetIDfromUser(String budgetName, boolean remove) throws Exception {
         try {
             Optional<Usuario> user = userRepository.findByUsername((getAuthenticatedUsername()));
             if (user.isPresent()) {
@@ -55,7 +55,7 @@ public class UserService {
                         .filter(a -> a.getName().equals(budgetName) && a.getYearMonth().equals(YearMonth.now().atDay(1)))
                         .findFirst();
 
-                user.get().getBudgets().remove(budget.get());
+                if (remove)user.get().getBudgets().remove(budget.get());
                 userRepository.save(user.get());
                 return budget.get().getId();
             }

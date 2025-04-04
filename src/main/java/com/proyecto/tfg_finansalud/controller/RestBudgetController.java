@@ -52,7 +52,7 @@ public class RestBudgetController {
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteBudget(@RequestBody BudgetDTO budgetDTO) {
         try{
-             String id = userService.returnBudgetIDfromUser(budgetDTO.getName());
+             String id = userService.returnBudgetIDfromUser(budgetDTO.getName(),true);
              budgetService.removeID(id);
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -64,7 +64,7 @@ public class RestBudgetController {
     public ResponseEntity<?> editBudget(@RequestBody BudgetDTO budgetDTO) {
         System.out.println(budgetDTO);
         try{
-            String idBudget = userService.returnBudgetIDfromUser(budgetDTO.getName());
+            String idBudget = userService.returnBudgetIDfromUser(budgetDTO.getName(),false);
             budgetService.updateBudget(idBudget, budgetDTO.getBudget());
 
         }catch (Exception e){
