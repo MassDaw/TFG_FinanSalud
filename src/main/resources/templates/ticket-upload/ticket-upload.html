@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Carga de Archivos</title>
+    <!-- Estilos CSS -->
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Estilos para la caja de carga */
+        .upload-box {
+            border: 2px dashed #90caf9;
+            border-radius: 8px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #e3f2fd;
+            margin-bottom: 30px;
+        }
+
+        .upload-box.dragging {
+            border-color: #2196f3;
+            background-color: #bbdefb;
+        }
+
+        .icon-container {
+            background-color: #bbdefb;
+            padding: 30px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        .phone-icon {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #2196f3;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .upload-button {
+            background-color: #64b5f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .upload-button:hover {
+            background-color: #2196f3;
+        }
+
+        .size-limit {
+            color: #64b5f6;
+            font-size: 14px;
+        }
+
+        /* Estilos para la tabla */
+        .files-table {
+            width: 100%;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .files-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .files-table th {
+            text-align: left;
+            padding: 12px 15px;
+            background-color: #f5f5f5;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #757575;
+            font-weight: 500;
+        }
+
+        .files-table td {
+            padding: 12px 15px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #757575;
+        }
+
+        .files-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .file-name {
+            color: #2196f3;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #424242;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        /* Icono de flechas */
+        .arrows-icon {
+            width: 40px;
+            height: 40px;
+            stroke: #2196f3;
+        }
+
+        /* Iconos pequeños */
+        .small-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Ocultar input de archivo */
+        .file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Caja de carga de archivos -->
+    <div class="upload-box" id="uploadBox">
+        <div class="icon-container">
+            <div class="phone-icon">
+                <!-- Icono de flechas hacia arriba -->
+                <svg class="arrows-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 8l4 4m0 0l-4 4m4-4H3m4-8l-4 4m0 0l4 4m-4-4h18" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="upload-button" id="scanButton">
+                <!-- Icono de escanear -->
+                <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 3H5a2 2 0 00-2 2v2M17 3h2a2 2 0 012 2v2M7 21H5a2 2 0 01-2-2v-2m12 4h2a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 12h18" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Escanear ticket
+            </button>
+
+            <button class="upload-button" id="addButton">
+                <!-- Icono de añadir -->
+                <svg class="small-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14m-7-7h14" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Añadir manualmente
+            </button>
+        </div>
+
+        <p class="size-limit">Hasta 10MB</p>
+
+        <input type="file" id="fileInput" class="file-input" multiple>
+    </div>
+
+    <!-- Sección de archivos subidos -->
+    <h2 class="section-title">Archivos subidos</h2>
+
+    <div class="files-table">
+        <table>
+            <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Nombre del archivo</th>
+                <th>Subido por</th>
+                <th>Tamaño</th>
+            </tr>
+            </thead>
+            <tbody id="filesTableBody">
+            <!-- Los archivos se cargarán aquí dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Datos iniciales de archivos
+    const initialFiles = [
+        { fecha: "03 Abr", nombre: "nombreArchivo.png", autor: "@Paolo", tamano: "190KB" },
+        { fecha: "03 Abr", nombre: "nombreArchivo.png", autor: "@Paolo", tamano: "190KB" },
+        { fecha: "03 Abr", nombre: "nombreArchivo.png", autor: "@Paolo", tamano: "190KB" },
+        { fecha: "03 Abr", nombre: "nombreArchivo.png", autor: "@Paolo", tamano: "190KB" },
+        { fecha: "03 Abr", nombre: "nombreArchivo.png", autor: "@Paolo", tamano: "190KB" },
+        { fecha: "03 Abr", nombre: "nombreArchivo.png", autor: "@Paolo", tamano: "190KB" }
+    ];
+
+    // Elementos del DOM
+    const uploadBox = document.getElementById('uploadBox');
+    const fileInput = document.getElementById('fileInput');
+    const scanButton = document.getElementById('scanButton');
+    const addButton = document.getElementById('addButton');
+    const filesTableBody = document.getElementById('filesTableBody');
+
+    // Cargar archivos iniciales
+    function loadInitialFiles() {
+        initialFiles.forEach(file => {
+            addFileToTable(file);
+        });
+    }
+
+    // Añadir un archivo a la tabla
+    function addFileToTable(file) {
+        const row = document.createElement('tr');
+
+        const fechaCell = document.createElement('td');
+        fechaCell.textContent = file.fecha;
+
+        const nombreCell = document.createElement('td');
+        nombreCell.textContent = file.nombre;
+        nombreCell.className = 'file-name';
+
+        const autorCell = document.createElement('td');
+        autorCell.textContent = file.autor;
+
+        const tamanoCell = document.createElement('td');
+        tamanoCell.textContent = file.tamano;
+
+        row.appendChild(fechaCell);
+        row.appendChild(nombreCell);
+        row.appendChild(autorCell);
+        row.appendChild(tamanoCell);
+
+        filesTableBody.appendChild(row);
+    }
+
+    // Manejar la subida de archivos
+    function handleFileUpload(event) {
+        const files = event.target.files;
+
+        if (files && files.length > 0) {
+            // Crear un FormData para enviar al servidor
+            const formData = new FormData();
+
+            Array.from(files).forEach(file => {
+                formData.append("files", file);
+            });
+
+            // Aquí puedes enviar los archivos a tu backend de Spring Boot
+            // fetch('http://localhost:8080/api/files/upload', {
+            //     method: 'POST',
+            //     body: formData,
+            // })
+            // .then(response => response.json())
+            // .then(data => {
+            //     // Procesar la respuesta del servidor
+            // })
+            // .catch(error => {
+            //     console.error('Error al subir archivos:', error);
+            // });
+
+            // Mientras tanto, mostrar los archivos localmente
+            Array.from(files).forEach(file => {
+                const fileData = {
+                    fecha: new Date().toLocaleDateString('es', { day: '2-digit', month: 'short' }),
+                    nombre: file.name,
+                    autor: "@Paolo",
+                    tamano: `${Math.round(file.size / 1024)}KB`
+                };
+
+                addFileToTable(fileData);
+            });
+        }
+
+        // Limpiar el input para permitir seleccionar el mismo archivo nuevamente
+        fileInput.value = '';
+    }
+
+    // Event listeners
+    scanButton.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    addButton.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', handleFileUpload);
+
+    // Drag and drop
+    uploadBox.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadBox.classList.add('dragging');
+    });
+
+    uploadBox.addEventListener('dragleave', () => {
+        uploadBox.classList.remove('dragging');
+    });
+
+    uploadBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadBox.classList.remove('dragging');
+
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            const event = {
+                target: {
+                    files: e.dataTransfer.files
+                }
+            };
+
+            handleFileUpload(event);
+        }
+    });
+
+    // Cargar archivos iniciales al cargar la página
+    document.addEventListener('DOMContentLoaded', loadInitialFiles);
+</script>
+</body>
+</html>

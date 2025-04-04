@@ -38,4 +38,9 @@ public class MainController {
         return "/profile/profile";
     }
 
+    @GetMapping("/upload")
+    public String upload() {
+        return "/ticket-upload/ticket-upload";
+    }
+
 }

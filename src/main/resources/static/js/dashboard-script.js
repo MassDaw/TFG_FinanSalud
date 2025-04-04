@@ -114,16 +114,16 @@ function getRandomColor(name) {
     // Colores predefinidos para categorías comunes
     const categoryColors = {
         alimentacion: "#4CAF50", // Verde
-        alimentos: "#4CAF50",
+        alimentos: "#4caf82",
         ocio: "#2196F3", // Azul
-        entretenimiento: "#2196F3",
+        entretenimiento: "#6e9dbf",
         servicios: "#FFC107", // Amarillo
         transporte: "#FF5722", // Naranja
         salud: "#E91E63", // Rosa
         educacion: "#9C27B0", // Púrpura
         hogar: "#795548", // Marrón
-        vivienda: "#795548",
-        mascotas: "#607D8B", // Gris azulado
+        vivienda: "#ba4d25",
+        mascotas: "#6c608b", // Gris azulado
         otros: "#9E9E9E", // Gris
     }
 
@@ -338,41 +338,6 @@ async function deleteBudget(name) {
         showNotification("Hubo un problema al eliminar el presupuesto", "error");
     }
 }
-
-async function editBudget(name, newBudgetAmount) {
-    try {
-        const response = await fetch("/budget/edit", {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name: name,
-                budget: newBudgetAmount // este es el nuevo monto
-            })
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            // Actualiza el presupuesto en la lista local
-            budgets = budgets.map((b) =>
-                b.name === name ? { ...b, budget: newBudgetAmount } : b
-            );
-            displayBudgets();
-            showNotification("Presupuesto actualizado correctamente", "success");
-        } else {
-            showNotification(`Error: ${result.message}`, "error");
-        }
-    } catch (error) {
-        console.error("Error al actualizar el presupuesto:", error);
-        showNotification("Hubo un problema al actualizar el presupuesto", "error");
-    }
-}
-
-
-
-
 
 
 // Mostrar notificación

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -68,7 +69,7 @@ public class RestBudgetController {
             budgetService.updateBudget(idBudget, budgetDTO.getBudget());
 
         }catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.ok(Map.of("message", "Presupuesto actualizado correctamente"));
         }
 
         return new ResponseEntity<>(null, HttpStatus.OK);

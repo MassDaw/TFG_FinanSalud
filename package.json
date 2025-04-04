@@ -10,5 +10,9 @@
     "type": "git",
     "url": "https://github.com/MassDaw/TFG_FinanSalud.git"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "lucide-react": "^0.487.0",
+    "react": "^19.1.0"
+  }
 }
