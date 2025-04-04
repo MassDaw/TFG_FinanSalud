@@ -46,19 +46,15 @@ public class UserService {
         }
     }
 
-    public String userDeleteBudgetGetID(String budgetName) throws Exception {
-        System.out.println(budgetName);
+    public String returnBudgetIDfromUser(String budgetName) throws Exception {
         try {
             Optional<Usuario> user = userRepository.findByUsername((getAuthenticatedUsername()));
-            List<Budget> y = user.get().getBudgets();
-            System.out.println(y);
             if (user.isPresent()) {
                 //el budget borrado debe coincidir con el NOMBRE Y FECHA ACTUAL PARA QUE NO SE ELIMINE REGISTROS ANTERIORES
                 Optional<Budget> budget = user.get().getBudgets().stream()
                         .filter(a -> a.getName().equals(budgetName) && a.getYearMonth().equals(YearMonth.now().atDay(1)))
                         .findFirst();
 
-                System.out.println(budget.get().getId());
                 user.get().getBudgets().remove(budget.get());
                 userRepository.save(user.get());
                 return budget.get().getId();
@@ -66,7 +62,7 @@ public class UserService {
         }catch (Exception e){
             throw new Exception("Usuario no encontrado");
         }
-        return null;
+        throw new Exception("Budget no encontrado");
     }
 
 
