@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -29,11 +30,13 @@ public class UserService {
         userRepository.save(user);
     }
 
+    //Obtiene todos los presupuestos del usuario del MES EN CURSO
     public List<Budget> getBudget() {
-        return userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets();
+        return userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets().stream()
+                .filter(a->a.getYearMonth().equals(YearMonth.now().atDay(1))).collect(Collectors.toList());
     }
 
-
+    //ASIGNA UN NUEVO BUDGET al usuario
     public void userNewBudget(Budget budget) throws Exception {
 
         Optional<Usuario> user = userRepository.findByUsername(getAuthenticatedUsername());
@@ -45,7 +48,8 @@ public class UserService {
             throw new Exception("Usuario no encontrado");
         }
     }
-
+    //BASADO EN EL NOMBRE DEL BUDGET, devuelve el ID del budget que sea del mes actual
+    //Recibe un boolean que opcionalmente puede borrar el budget o no
     public String returnBudgetIDfromUser(String budgetName, boolean remove) throws Exception {
         try {
             Optional<Usuario> user = userRepository.findByUsername((getAuthenticatedUsername()));
@@ -74,7 +78,7 @@ public class UserService {
         if (principal instanceof UserDetails) {
             return ((UserDetails) principal).getUsername();
         } else {
-            return principal.toString(); // Si el principal es solo un string (caso raro)
+            return principal.toString(); // Si el principal es solo un string
         }
     }
 

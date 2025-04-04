@@ -25,7 +25,7 @@ public class RestBudgetController {
     private final BudgetMapper budgetMapper;
     private final BudgetService budgetService;
 
-
+    //devuelve todos los budget del usuario que coincidan con el mes actual
     @GetMapping("/getAll")
     public ResponseEntity<List<BudgetDTO>> budget() {
         try {
