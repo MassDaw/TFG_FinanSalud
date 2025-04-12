@@ -7,9 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('nav-presupuestos').classList.add('active');
     } else if (currentPath.includes('monthly-overview.html')) {
         document.getElementById('nav-resumen').classList.add('active');
-    } else if (currentPath.includes('add.html')) {
+    } else if (currentPath.includes('image-upload-ocr.html')) {
         document.getElementById('nav-anadir').classList.add('active');
     } else if (currentPath.includes('settings.html')) {
         document.getElementById('nav-ajustes').classList.add('active');
     }
 });
+

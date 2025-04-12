@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OCR de Tickets</title>
+  <link rel="stylesheet" href="/css/image-upload-ocr.css">
+  <link rel="stylesheet" href="/css/navigation-bar.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+</head>
+<body>
+<div class="upload-container">
+  <div class="upload-box" id="drop-zone">
+    <img src="/images/upload-svgrepo-com.svg" alt="Ícono móvil" class="upload-icon">
+    <div class="buttons">
+      <button id="scan-btn">Agregar ticket</button>
+    </div>
+    <p class="upload-hint">También puedes arrastrar tu ticket aquí</p>
+    <p class="upload-hint">Hasta 10MB</p>
+    <input type="file" id="file-input" accept="image/*" hidden>
+  </div>
+</div>
+
+<section class="file-list-section">
+  <h2>Archivos subidos</h2>
+  <table class="file-table">
+    <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Nombre del archivo</th>
+      <th>Subido por</th>
+      <th>Tamaño</th>
+    </tr>
+    </thead>
+    <tbody id="file-table-body">
+    <!-- JS insertará las filas aquí -->
+    </tbody>
+  </table>
+</section>
+
+<script src="/js/image-upload-ocr.js"></script>
+
+</body>
+<script src="/js/navigation-bar.js"></script>
+<div id="navigation-container"></div>
+
+<script>
+
+  // Cargar el componente de navegación
+  fetch('/navigation-bar')
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById('navigation-container').innerHTML = data;
+          });
+</script>
+</html>

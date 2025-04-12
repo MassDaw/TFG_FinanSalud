@@ -38,4 +38,9 @@ public class MainController {
         return "/profile/profile";
     }
 
+    @GetMapping("/image-upload-ocr")
+    public String getImageUpload() {
+        return "/image-upload-ocr/image-upload-ocr";
+    }
+
 }
