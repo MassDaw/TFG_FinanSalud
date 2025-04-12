@@ -2,6 +2,7 @@ package com.proyecto.tfg_finansalud.services;
 
 
 import com.proyecto.tfg_finansalud.entities.Budget;
+import com.proyecto.tfg_finansalud.entities.Item;
 import com.proyecto.tfg_finansalud.entities.Usuario;
 import com.proyecto.tfg_finansalud.repositories.BudgetRepository;
 import com.proyecto.tfg_finansalud.repositories.UserRepository;
@@ -11,8 +12,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -47,5 +51,13 @@ public class BudgetService {
             }
     }
 
+
+    public Map<String, List<Item>> getItemfromBudget(List<String> budgets) {
+        List<Budget> budgetList = budgetRepository.findAllByIdIn(budgets);
+        Map<String, List<Item>> map = budgetList.stream().collect(Collectors.toMap(Budget::getName, Budget::getItems));
+        //crea un mapa donde la clave es la categoria y el valor una lista de gastos/items
+
+        return map;
+    }
 
 }

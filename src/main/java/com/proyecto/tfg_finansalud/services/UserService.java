@@ -35,6 +35,11 @@ public class UserService {
         return userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets().stream()
                 .filter(a->a.getYearMonth().equals(YearMonth.now().atDay(1))).collect(Collectors.toList());
     }
+    //Obtiene todos los presupuestos del usuario del MES EN CURSO Y solo retorna los id
+    public List<String> getBudgetID() {
+        return userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets().stream()
+                .filter(a->a.getYearMonth().equals(YearMonth.now().atDay(1))).map(Budget::getId).collect(Collectors.toList());
+    }
 
     //ASIGNA UN NUEVO BUDGET al usuario
     public void userNewBudget(Budget budget) throws Exception {

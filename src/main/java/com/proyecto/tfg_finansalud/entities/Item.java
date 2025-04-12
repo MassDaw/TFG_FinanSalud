@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
+import java.util.Date;
+
 @Data
 @Builder
 @Getter
@@ -16,4 +18,5 @@ public class Item {
     private String ItemName;
     private String ItemDescription;
     private Double ItemPrice;
+    private Date ItemDate;
 }

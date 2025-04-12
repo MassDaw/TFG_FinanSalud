@@ -4,6 +4,7 @@ package com.proyecto.tfg_finansalud.controller;
 import com.proyecto.tfg_finansalud.DTO.budget.BudgetDTO;
 import com.proyecto.tfg_finansalud.DTO.budget.BudgetMapper;
 import com.proyecto.tfg_finansalud.entities.Budget;
+import com.proyecto.tfg_finansalud.entities.Item;
 import com.proyecto.tfg_finansalud.services.BudgetService;
 import com.proyecto.tfg_finansalud.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -62,7 +64,6 @@ public class RestBudgetController {
 
     @PutMapping("/edit")
     public ResponseEntity<?> editBudget(@RequestBody BudgetDTO budgetDTO) {
-        System.out.println(budgetDTO);
         try{
             String idBudget = userService.returnBudgetIDfromUser(budgetDTO.getName(),false);
             budgetService.updateBudget(idBudget, budgetDTO.getBudget());
@@ -72,6 +73,24 @@ public class RestBudgetController {
         }
 
         return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    // <<<<<<<<<<<<<<<<monthly-overview>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    @GetMapping("/itemsCurrentMonth")
+    public ResponseEntity<Map<String,List<Item>>> getItemsCurrentMonth() {
+        try {
+            List<String> budgetsID = userService.getBudgetID();//id de Budget del usuario en el mes actual
+
+            return ResponseEntity.ok(
+                    budgetService.getItemfromBudget(budgetsID));
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
 
     }
+
+
 }
