@@ -350,11 +350,22 @@ async function editBudget(name, newBudgetAmount) {
             },
             body: JSON.stringify({
                 name: name,
-                budget: newBudgetAmount // este es el nuevo monto
+                budget: newBudgetAmount
             })
         });
 
-        const result = await response.json();
+        // Leer el texto de la respuesta (puede estar vacío)
+        const text = await response.text();
+        let result = {};
+
+        // Intentar parsear como JSON si hay algo en la respuesta
+        if (text) {
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                console.warn("Respuesta no era JSON válido:", text);
+            }
+        }
 
         if (response.ok) {
             // Actualiza el presupuesto en la lista local
@@ -364,13 +375,14 @@ async function editBudget(name, newBudgetAmount) {
             displayBudgets();
             showNotification("Presupuesto actualizado correctamente", "success");
         } else {
-            showNotification(`Error: ${result.message}`, "error");
+            showNotification(`Error: ${result.message || "Error desconocido"}`, "error");
         }
     } catch (error) {
         console.error("Error al actualizar el presupuesto:", error);
         showNotification("Hubo un problema al actualizar el presupuesto", "error");
     }
 }
+
 
 
 

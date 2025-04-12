@@ -35,6 +35,9 @@ body {
     cursor: pointer;
     font-size: 14px;
 }
+#scan-btn:hover {
+    background-color: #3a7bc8;
+}
 
 .upload-hint {
     margin-top: 10px;

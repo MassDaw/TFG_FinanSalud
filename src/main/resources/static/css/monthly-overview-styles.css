@@ -6,8 +6,10 @@
 }
 
 body {
-    background-color: #f5f7fa;
-    color: #333;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    line-height: 1.6;
 }
 
 .container {
@@ -16,16 +18,18 @@ body {
     padding: 20px;
 }
 
-/* Header Styles */
+/* Estilos del encabezado */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 20px 0;
     margin-bottom: 30px;
 }
 
 .profile-container {
-    flex: 1;
+    width: 50px;
+    height: 50px;
 }
 
 .profile-image {
