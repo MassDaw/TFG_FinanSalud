@@ -4,317 +4,336 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resumen Mensual</title>
-    <link rel="stylesheet" href="/css/navigation-bar.css">
-    <link rel="stylesheet" href="/css/monthly-overview-styles.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilos personalizados para los botones sin Bootstrap */
+        .custom-buttons-container {
+            display: flex;
+            margin-bottom: 1.5rem;
+            gap: 10px;
+        }
+
+        .custom-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .custom-button i {
+            margin-right: 8px;
+        }
+
+        .income-button {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .income-button:hover {
+            background-color: #059669;
+        }
+
+        .expense-button {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .expense-button:hover {
+            background-color: #dc2626;
+        }
+    </style>
 </head>
-<body>
-<div class="container">
-    <header class="header">
-        <div class="profile-container">
-<!--            <a href="profile.html" class="profile-link"> -->
-<!--                TODO: CREAR PERFIL-->
-                <img src="/images/profile-pic.jpg" alt="Foto de perfil" class="profile-image">
-<!--            </a>-->
+<body class="bg-light">
+<div class="container py-4">
+    <header class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div class="d-flex align-items-center">
+            <div class="me-3">
+                <img src="/profile-pic.jpg" alt="Foto de perfil" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+            </div>
+            <div>
+                <h1 class="h3 mb-0 text-primary">Resumen Financiero</h1>
+                <p class="text-muted small mb-0">Análisis de ingresos y gastos</p>
+            </div>
         </div>
-        <div class="title-container">
-            <h1>Resumen Financiero</h1>
-            <p>Análisis de ingresos y gastos</p>
-        </div>
-        <div class="date-container">
-            <span id="current-month">Marzo 2025</span>
-            <button class="calendar-btn"><i class="fas fa-calendar"></i></button>
+        <div class="d-flex align-items-center">
+            <span id="current-month" class="me-2 fw-bold">Marzo 2025</span>
+            <button class="btn btn-outline-secondary btn-sm rounded-circle">
+                <i class="fas fa-calendar"></i>
+            </button>
         </div>
     </header>
 
-    <div class="overview-title">
-        <h2>Resumen</h2>
+    <div class="mb-4">
+        <h2 class="h4 mb-3">Resumen</h2>
     </div>
 
-    <div class="summary-cards">
-        <div class="summary-card">
-            <div class="card-icon">
-                <i class="fas fa-wallet"></i>
-            </div>
-            <div class="card-content">
-                <div class="card-label">Balance Total</div>
-                <div class="card-value">€2,450.75</div>
-                <div class="card-trend positive">
-                    <i class="fas fa-arrow-up"></i> 15.3% respecto al mes anterior
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex">
+                    <div class="rounded-circle bg-light p-3 me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-wallet text-primary fa-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Balance Total</h6>
+                        <h3 class="mb-1">€2,450.75</h3>
+                        <p class="small text-success mb-0">
+                            <i class="fas fa-arrow-up me-1"></i> 15.3% respecto al mes anterior
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="card-menu">
-                <i class="fas fa-ellipsis-h"></i>
             </div>
         </div>
 
-        <div class="summary-card">
-            <div class="card-icon income-icon">
-                <i class="fas fa-arrow-down"></i>
-            </div>
-            <div class="card-content">
-                <div class="card-label">Ingresos Totales</div>
-                <div class="card-value">€3,850.00</div>
-                <div class="card-trend positive">
-                    <i class="fas fa-arrow-up"></i> 5.2% respecto al mes anterior
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-arrow-down text-success fa-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Ingresos Totales</h6>
+                        <h3 class="mb-1">€3,850.00</h3>
+                        <p class="small text-success mb-0">
+                            <i class="fas fa-arrow-up me-1"></i> 5.2% respecto al mes anterior
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="card-menu">
-                <i class="fas fa-ellipsis-h"></i>
             </div>
         </div>
 
-        <div class="summary-card">
-            <div class="card-icon expense-icon">
-                <i class="fas fa-arrow-up"></i>
-            </div>
-            <div class="card-content">
-                <div class="card-label">Gastos Totales</div>
-                <div class="card-value">€1,399.25</div>
-                <div class="card-trend negative">
-                    <i class="fas fa-arrow-up"></i> 8.7% respecto al mes anterior
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body d-flex">
+                    <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-arrow-up text-danger fa-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Gastos Totales</h6>
+                        <h3 class="mb-1">€1,399.25</h3>
+                        <p class="small text-danger mb-0">
+                            <i class="fas fa-arrow-up me-1"></i> 8.7% respecto al mes anterior
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="card-menu">
-                <i class="fas fa-ellipsis-h"></i>
             </div>
         </div>
     </div>
 
+    <!-- Botones personalizados para añadir ingresos y gastos (sin Bootstrap) -->
+    <div class="custom-buttons-container">
+        <button id="add-income" class="custom-button income-button">
+            <i class="fas fa-plus"></i> Añadir Ingreso
+        </button>
+        <button id="add-expense" class="custom-button expense-button">
+            <i class="fas fa-minus"></i> Añadir Gasto
+        </button>
+    </div>
 
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="income-tab" data-bs-toggle="tab" data-bs-target="#income-content" type="button" role="tab" aria-controls="income-content" aria-selected="true">Ingresos</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="expense-tab" data-bs-toggle="tab" data-bs-target="#expense-content" type="button" role="tab" aria-controls="expense-content" aria-selected="false">Gastos</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="income-content" role="tabpanel" aria-labelledby="income-tab">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-briefcase text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Salario</h6>
+                                        <p class="text-muted small mb-0">15 Mar 2025</p>
+                                    </div>
+                                    <div class="text-success fw-bold">+€2,800.00</div>
+                                </div>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
 
-    <div class="detailed-section">
-        <div class="section-tabs">
-            <button class="tab-btn active" data-tab="income">Ingresos</button>
-            <button class="tab-btn" data-tab="expense">Gastos</button>
-        </div>
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-laptop-code text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Proyecto Freelance</h6>
+                                        <p class="text-muted small mb-0">20 Mar 2025</p>
+                                    </div>
+                                    <div class="text-success fw-bold">+€450.00</div>
+                                </div>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 16.07%;" aria-valuenow="16.07" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
 
-        <div class="tab-content active" id="income-tab">
-            <div class="income-list">
-                <div class="income-item">
-                    <div class="income-icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <div class="income-details">
-                        <div class="income-title">Salario</div>
-                        <div class="income-date">15 Mar 2025</div>
-                    </div>
-                    <div class="income-amount">+€2,800.00</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 100%"></div>
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-hand-holding-usd text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Devolución Hacienda</h6>
+                                        <p class="text-muted small mb-0">22 Mar 2025</p>
+                                    </div>
+                                    <div class="text-success fw-bold">+€320.00</div>
+                                </div>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 11.43%;" aria-valuenow="11.43" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-gift text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Regalo Cumpleaños</h6>
+                                        <p class="text-muted small mb-0">25 Mar 2025</p>
+                                    </div>
+                                    <div class="text-success fw-bold">+€150.00</div>
+                                </div>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 5.36%;" aria-valuenow="5.36" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-piggy-bank text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Intereses Cuenta</h6>
+                                        <p class="text-muted small mb-0">31 Mar 2025</p>
+                                    </div>
+                                    <div class="text-success fw-bold">+€130.00</div>
+                                </div>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 4.64%;" aria-valuenow="4.64" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="income-item">
-                    <div class="income-icon">
-                        <i class="fas fa-laptop-code"></i>
-                    </div>
-                    <div class="income-details">
-                        <div class="income-title">Proyecto Freelance</div>
-                        <div class="income-date">20 Mar 2025</div>
-                    </div>
-                    <div class="income-amount">+€450.00</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 16.07%"></div>
+                <div class="tab-pane fade" id="expense-content" role="tabpanel" aria-labelledby="expense-tab">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-home text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Alquiler</h6>
+                                        <p class="text-muted small mb-0">5 Mar 2025</p>
+                                    </div>
+                                    <div class="text-danger fw-bold">-€850.00</div>
+                                </div>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="income-item">
-                    <div class="income-icon">
-                        <i class="fas fa-hand-holding-usd"></i>
-                    </div>
-                    <div class="income-details">
-                        <div class="income-title">Devolución Hacienda</div>
-                        <div class="income-date">22 Mar 2025</div>
-                    </div>
-                    <div class="income-amount">+€320.00</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 11.43%"></div>
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-shopping-cart text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Supermercado</h6>
+                                        <p class="text-muted small mb-0">8 Mar 2025</p>
+                                    </div>
+                                    <div class="text-danger fw-bold">-€125.50</div>
+                                </div>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 14.76%;" aria-valuenow="14.76" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="income-item">
-                    <div class="income-icon">
-                        <i class="fas fa-gift"></i>
-                    </div>
-                    <div class="income-details">
-                        <div class="income-title">Regalo Cumpleaños</div>
-                        <div class="income-date">25 Mar 2025</div>
-                    </div>
-                    <div class="income-amount">+€150.00</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 5.36%"></div>
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-bolt text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Electricidad</h6>
+                                        <p class="text-muted small mb-0">10 Mar 2025</p>
+                                    </div>
+                                    <div class="text-danger fw-bold">-€85.30</div>
+                                </div>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 10.04%;" aria-valuenow="10.04" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="income-item">
-                    <div class="income-icon">
-                        <i class="fas fa-piggy-bank"></i>
-                    </div>
-                    <div class="income-details">
-                        <div class="income-title">Intereses Cuenta</div>
-                        <div class="income-date">31 Mar 2025</div>
-                    </div>
-                    <div class="income-amount">+€130.00</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 4.64%"></div>
+                        <!-- Más gastos... -->
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-wifi text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Internet y Móvil</h6>
+                                        <p class="text-muted small mb-0">12 Mar 2025</p>
+                                    </div>
+                                    <div class="text-danger fw-bold">-€65.99</div>
+                                </div>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 7.76%;" aria-valuenow="7.76" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="tab-content" id="expense-tab">
-            <div class="expense-list">
-                <div class="expense-item">
-                    <div class="expense-icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <div class="expense-details">
-                        <div class="expense-title">Alquiler</div>
-                        <div class="expense-date">5 Mar 2025</div>
-                    </div>
-                    <div class="expense-amount">-€850.00</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress expense-progress" style="width: 100%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="expense-item">
-                    <div class="expense-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="expense-details">
-                        <div class="expense-title">Supermercado</div>
-                        <div class="expense-date">8 Mar 2025</div>
-                    </div>
-                    <div class="expense-amount">-€125.50</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress expense-progress" style="width: 14.76%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="expense-item">
-                    <div class="expense-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <div class="expense-details">
-                        <div class="expense-title">Electricidad</div>
-                        <div class="expense-date">10 Mar 2025</div>
-                    </div>
-                    <div class="expense-amount">-€85.30</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress expense-progress" style="width: 10.04%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="expense-item">
-                    <div class="expense-icon">
-                        <i class="fas fa-wifi"></i>
-                    </div>
-                    <div class="expense-details">
-                        <div class="expense-title">Internet y Móvil</div>
-                        <div class="expense-date">12 Mar 2025</div>
-                    </div>
-                    <div class="expense-amount">-€65.99</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress expense-progress" style="width: 7.76%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="expense-item">
-                    <div class="expense-icon">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <div class="expense-details">
-                        <div class="expense-title">Restaurante</div>
-                        <div class="expense-date">18 Mar 2025</div>
-                    </div>
-                    <div class="expense-amount">-€68.75</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress expense-progress" style="width: 8.09%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="expense-item">
-                    <div class="expense-icon">
-                        <i class="fas fa-bus"></i>
-                    </div>
-                    <div class="expense-details">
-                        <div class="expense-title">Transporte Público</div>
-                        <div class="expense-date">20 Mar 2025</div>
-                    </div>
-                    <div class="expense-amount">-€45.00</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress expense-progress" style="width: 5.29%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="expense-item">
-                    <div class="expense-icon">
-                        <i class="fas fa-film"></i>
-                    </div>
-                    <div class="expense-details">
-                        <div class="expense-title">Cine</div>
-                        <div class="expense-date">22 Mar 2025</div>
-                    </div>
-                    <div class="expense-amount">-€24.00</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress expense-progress" style="width: 2.82%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="expense-item">
-                    <div class="expense-icon">
-                        <i class="fas fa-tshirt"></i>
-                    </div>
-                    <div class="expense-details">
-                        <div class="expense-title">Ropa</div>
-                        <div class="expense-date">25 Mar 2025</div>
-                    </div>
-                    <div class="expense-amount">-€89.95</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress expense-progress" style="width: 10.58%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="expense-item">
-                    <div class="expense-icon">
-                        <i class="fas fa-heartbeat"></i>
-                    </div>
-                    <div class="expense-details">
-                        <div class="expense-title">Gimnasio</div>
-                        <div class="expense-date">28 Mar 2025</div>
-                    </div>
-                    <div class="expense-amount">-€44.99</div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress expense-progress" style="width: 5.29%"></div>
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-utensils text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">Restaurante</h6>
+                                        <p class="text-muted small mb-0">18 Mar 2025</p>
+                                    </div>
+                                    <div class="text-danger fw-bold">-€68.75</div>
+                                </div>
+                                <div class="progress mt-2" style="height: 4px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 8.09%;" aria-valuenow="8.09" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -322,71 +341,192 @@
         </div>
     </div>
 
-    <div class="transactions-section">
-        <div class="section-header">
-            <h3>Transacciones Recientes</h3>
-            <button class="view-all-btn">Ver todas</button>
-        </div>
-        <div class="transactions-list">
-            <div class="transaction-item income">
-                <div class="transaction-icon">
-                    <i class="fas fa-briefcase"></i>
-                </div>
-                <div class="transaction-details">
-                    <div class="transaction-title">Salario</div>
-                    <div class="transaction-date">15 Mar 2025</div>
-                </div>
-                <div class="transaction-amount">+€2,800.00</div>
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title mb-0">Transacciones Recientes</h5>
+                <button class="btn btn-sm btn-link text-decoration-none">Ver todas</button>
             </div>
-            <div class="transaction-item expense">
-                <div class="transaction-icon">
-                    <i class="fas fa-home"></i>
+            <div class="list-group list-group-flush">
+                <div class="list-group-item d-flex align-items-center py-3 px-0 border-top">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fas fa-briefcase text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">Salario</h6>
+                                <p class="text-muted small mb-0">15 Mar 2025</p>
+                            </div>
+                            <div class="text-success fw-bold">+€2,800.00</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="transaction-details">
-                    <div class="transaction-title">Alquiler</div>
-                    <div class="transaction-date">5 Mar 2025</div>
+
+                <div class="list-group-item d-flex align-items-center py-3 px-0">
+                    <div class="rounded-circle bg-danger bg-opacity-10 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fas fa-home text-danger"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">Alquiler</h6>
+                                <p class="text-muted small mb-0">5 Mar 2025</p>
+                            </div>
+                            <div class="text-danger fw-bold">-€850.00</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="transaction-amount">-€850.00</div>
-            </div>
-            <div class="transaction-item income">
-                <div class="transaction-icon">
-                    <i class="fas fa-laptop-code"></i>
+
+                <div class="list-group-item d-flex align-items-center py-3 px-0">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fas fa-laptop-code text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">Freelance</h6>
+                                <p class="text-muted small mb-0">20 Mar 2025</p>
+                            </div>
+                            <div class="text-success fw-bold">+€450.00</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="transaction-details">
-                    <div class="transaction-title">Freelance</div>
-                    <div class="transaction-date">20 Mar 2025</div>
+
+                <div class="list-group-item d-flex align-items-center py-3 px-0">
+                    <div class="rounded-circle bg-danger bg-opacity-10 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-cart text-danger"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">Supermercado</h6>
+                                <p class="text-muted small mb-0">8 Mar 2025</p>
+                            </div>
+                            <div class="text-danger fw-bold">-€125.50</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="transaction-amount">+€450.00</div>
-            </div>
-            <div class="transaction-item expense">
-                <div class="transaction-icon">
-                    <i class="fas fa-shopping-cart"></i>
+
+                <div class="list-group-item d-flex align-items-center py-3 px-0">
+                    <div class="rounded-circle bg-danger bg-opacity-10 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fas fa-utensils text-danger"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">Restaurante</h6>
+                                <p class="text-muted small mb-0">18 Mar 2025</p>
+                            </div>
+                            <div class="text-danger fw-bold">-€68.75</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="transaction-details">
-                    <div class="transaction-title">Supermercado</div>
-                    <div class="transaction-date">8 Mar 2025</div>
-                </div>
-                <div class="transaction-amount">-€125.50</div>
-            </div>
-            <div class="transaction-item expense">
-                <div class="transaction-icon">
-                    <i class="fas fa-utensils"></i>
-                </div>
-                <div class="transaction-details">
-                    <div class="transaction-title">Restaurante</div>
-                    <div class="transaction-date">18 Mar 2025</div>
-                </div>
-                <div class="transaction-amount">-€68.75</div>
             </div>
         </div>
     </div>
-
-
 </div>
 
-<script src="../../static/js/monthly-overview-script.js"></script>
-<script src="../../static/js/navigation-bar.js"></script>
-<div id="navigation-container"></div>
+<!-- Modales para añadir ingresos y gastos (mantenidos con Bootstrap) -->
+<div class="modal fade" id="income-modal" tabindex="-1" aria-labelledby="incomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="incomeModalLabel">Añadir Ingreso</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-income-form">
+                    <div class="mb-3">
+                        <label for="income-title" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="income-title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="income-amount" class="form-label">Cantidad (€)</label>
+                        <input type="number" class="form-control" id="income-amount" min="0" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="income-date" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="income-date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="income-category" class="form-label">Categoría</label>
+                        <select class="form-select" id="income-category" required>
+                            <option value="salario">Salario</option>
+                            <option value="freelance">Freelance</option>
+                            <option value="inversiones">Inversiones</option>
+                            <option value="regalo">Regalo</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="income-notes" class="form-label">Notas (opcional)</label>
+                        <textarea class="form-control" id="income-notes" rows="3"></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success ms-2">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="expense-modal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="expenseModalLabel">Añadir Gasto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-expense-form">
+                    <div class="mb-3">
+                        <label for="expense-title" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="expense-title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expense-amount" class="form-label">Cantidad (€)</label>
+                        <input type="number" class="form-control" id="expense-amount" min="0" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expense-date" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="expense-date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expense-category" class="form-label">Categoría</label>
+                        <select class="form-select" id="expense-category" required>
+                            <option value="alimentacion">Alimentación</option>
+                            <option value="ocio">Ocio</option>
+                            <option value="servicios">Servicios</option>
+                            <option value="transporte">Transporte</option>
+                            <option value="salud">Salud</option>
+                            <option value="educacion">Educación</option>
+                            <option value="hogar">Hogar</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expense-notes" class="form-label">Notas (opcional)</label>
+                        <textarea class="form-control" id="expense-notes" rows="3"></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger ms-2">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="navigation-container" class="fixed-bottom"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/monthly-overview-script.js"></script>
+<script src="/js/navigation-bar.js"></script>
 
 <script>
     // Cargar el componente de navegación
@@ -395,7 +535,40 @@
         .then(data => {
             document.getElementById('navigation-container').innerHTML = data;
         });
+
+    // Funcionalidad para los botones de añadir ingreso y gasto
+    document.addEventListener('DOMContentLoaded', function() {
+        const addIncomeBtn = document.getElementById('add-income');
+        const addExpenseBtn = document.getElementById('add-expense');
+
+        // Inicializar los modales de Bootstrap
+        const incomeModal = new bootstrap.Modal(document.getElementById('income-modal'));
+        const expenseModal = new bootstrap.Modal(document.getElementById('expense-modal'));
+
+        // Mostrar modal al hacer clic en los botones
+        addIncomeBtn.addEventListener('click', function() {
+            incomeModal.show();
+        });
+
+        addExpenseBtn.addEventListener('click', function() {
+            expenseModal.show();
+        });
+
+        // Manejar el envío de los formularios
+        document.getElementById('add-income-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Aquí iría la lógica para guardar el ingreso
+            console.log('Ingreso guardado');
+            incomeModal.hide();
+        });
+
+        document.getElementById('add-expense-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Aquí iría la lógica para guardar el gasto
+            console.log('Gasto guardado');
+            expenseModal.hide();
+        });
+    });
 </script>
 </body>
 </html>
-
