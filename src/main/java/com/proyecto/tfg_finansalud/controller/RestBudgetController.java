@@ -75,22 +75,10 @@ public class RestBudgetController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    // <<<<<<<<<<<<<<<<monthly-overview>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-    @GetMapping("/itemsCurrentMonth")
-    public ResponseEntity<Map<String,List<Item>>> getItemsCurrentMonth() {
-        try {
-            List<String> budgetsID = userService.getBudgetID();//id de Budget del usuario en el mes actual
-
-            return ResponseEntity.ok(
-                    budgetService.getItemfromBudget(budgetsID));
-        }catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
 
-    }
 
 
 }
