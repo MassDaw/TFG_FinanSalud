@@ -3,63 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil - FinanSalud</title>
+    <title>FinanSalud - Perfil</title>
+    <link rel="stylesheet" href="/css/profile-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/navigation-bar.css">
     <link rel="stylesheet" href="/css/profile-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 </head>
 <body>
 <div class="container">
-    <div class="profile-container">
-        <!-- Sección de perfil -->
-        <div class="profile-header">
-            <div class="profile-image-container">
-                <img src="/images/profile-pic.jpg" alt="Foto de perfil" class="profile-image">
-            </div>
-            <div class="profile-info">
-                <h1 class="profile-name">Paolo Idrogas</h1>
-                <p class="profile-title">Programador</p>
-            </div>
-            <button class="edit-profile-btn">
-                <i class="fas fa-pencil-alt"></i>
-            </button>
+    <div class="dashboard-grid">
+        <!-- Profile Section -->
+        <div class="card profile-card">
+
+            <h2 class="profile-name">Ana Bombardini</h2>
+            <p class="profile-email">anabombardini@gmail.com</p>
+            <button class="btn btn-primary">Editar</button>
         </div>
 
-        <!-- Sección de estadísticas -->
-        <div class="stats-container">
-            <div class="stat-card">
-                <h3>Has ahorrado</h3>
-                <p class="stat-amount">$254,24</p>
-                <p class="stat-period">este mes</p>
+        <!-- Cards Section -->
+        <div class="card cards-card">
+            <h2 class="section-title">Mis tarjetas</h2>
+            <div class="cards-container">
+                <button class="nav-btn prev-btn">&lt;</button>
+                <div class="credit-card">
+                    <div class="credit-card-header">
+                        <span class="credit-card-type">VISA</span>
+                    </div>
+                    <div class="credit-card-body">
+                        <div class="credit-card-number">1234 5678 6543 4321</div>
+                        <div class="credit-card-footer">
+                            <span class="credit-card-holder">JACK SPARROW</span>
+                            <span class="credit-card-expiry">02/25</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="nav-btn next-btn">&gt;</button>
             </div>
-            <div class="stat-card">
-                <h3>Total ahorrado</h3>
-                <p class="stat-amount">$2554,24</p>
+            <button class="btn btn-primary">Añadir</button>
+        </div>
+
+        <!-- Information Section -->
+        <div class="card info-card">
+            <h2 class="section-title">Información general</h2>
+            <div class="info-list">
+                <div class="info-item">
+                    <span class="info-label">Presupuesto del mes:</span>
+                    <span class="info-value">€1350,32</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ingresos totales:</span>
+                    <span class="info-value">€1109,15</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Gastos totales:</span>
+                    <span class="info-value">€759,91</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Ahorro total:</span>
+                    <span class="info-value">€759,91</span>
+                </div>
             </div>
         </div>
 
-        <!-- Sección de menú -->
-        <div class="menu-container">
-            <a href="#" class="menu-item">
-                <i class="fas fa-star"></i>
-                <span>Favoritos</span>
-            </a>
-            <a href="index.html" class="menu-item">
-                <i class="fas fa-chart-pie"></i>
-                <span>Presupuestos</span>
-            </a>
-            <a href="#" class="menu-item">
-                <i class="fas fa-question-circle"></i>
-                <span>Información</span>
-            </a>
-            <a href="#" class="menu-item logout">
-                <i class="fas fa-power-off"></i>
-                <span>Logout</span>
-            </a>
+        <!-- Analysis Section -->
+        <div class="card analysis-card">
+            <h2 class="section-title">Análisis básico</h2>
+            <div class="analysis-content">
+                <div class="analysis-item">
+                    <h3 class="analysis-title">Tasa de ahorro</h3>
+                    <p class="analysis-value">€759,91 / €1109,15 = 68.5%</p>
+                </div>
+                <div class="analysis-item">
+                    <h3 class="analysis-title">Gastos vs. presupuesto</h3>
+                    <p class="analysis-value">€759,91 / €1350,32 = 56.3%</p>
+                </div>
+                <div class="analysis-item">
+                    <h3 class="analysis-title">Tendencia</h3>
+                    <p class="analysis-value">
+                        Tus ingresos han crecido un <span class="highlight-positive">5%</span> respecto al mes pasado.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="card chart-card">
+            <h2 class="section-title">Gráfico anual</h2>
+            <div class="chart-container">
+                <canvas id="annualChart"></canvas>
+            </div>
         </div>
     </div>
 </div>
 
 <script src="/js/profile-script.js"></script>
+<script src="/js/dashboard-script.js"></script>
+<div id="navigation-container"></div>
+
+<script>
+    // Cargar el componente de navegación
+    fetch('/navigation-bar')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('navigation-container').innerHTML = data;
+        });
+</script>
 </body>
 </html>
-
