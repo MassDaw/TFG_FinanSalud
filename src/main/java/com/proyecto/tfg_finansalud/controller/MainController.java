@@ -28,6 +28,11 @@ public class MainController {
         return "/navigation-bar/navigation-bar";
     }
 
+    @GetMapping("/header")
+    public String getHeader() {
+        return "/header/header";
+    }
+
     @GetMapping("/monthly-overview")
     public String getMonthlyOverview() {
         return "/overview/monthly-overview";
@@ -37,10 +42,13 @@ public class MainController {
     public String getProfile() {
         return "/profile/profile";
     }
-
     @GetMapping("/image-upload-ocr")
     public String getImageUpload() {
         return "/image-upload-ocr/image-upload-ocr";
     }
 
+    @GetMapping("/market")
+    public String getMarket() {
+        return "/market/market";
+    }
 }
