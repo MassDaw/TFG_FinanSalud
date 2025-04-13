@@ -416,13 +416,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadBudgets()  // Esperar a que los presupuestos se carguen
 
     addBudgetBtn.addEventListener("click", openAddModal)
-    editBudgetBtn.addEventListener("click", () => {
-        if (budgets.length > 0) {
-            openEditModal(budgets[0].name)
-        } else {
-            showNotification("No hay presupuestos para editar", "info")
-        }
-    })
+
 
     closeBtns.forEach((btn) => {
         btn.addEventListener("click", closeModals)
