@@ -60,4 +60,8 @@ public class BudgetService {
         return map;
     }
 
+    public Budget getBudget(String id) {
+        Optional<Budget> budget = budgetRepository.findById(id);
+        return budget.orElse(null);
+    }
 }

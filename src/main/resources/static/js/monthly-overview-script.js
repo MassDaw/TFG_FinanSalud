@@ -1,3 +1,4 @@
+const addItemForm = document.getElementById("add-income-form")
 document.addEventListener("DOMContentLoaded", () => {
     // Actualizar fecha actual
     const monthNames = [
@@ -141,6 +142,33 @@ document.addEventListener("DOMContentLoaded", () => {
             barra.style.width = `${porcentaje}%`
         })
     }
+    function addexpense(event){
+        event.preventDefault();
+
+        const nombre = document.getElementById("expense-title").value;
+        const cantidad = document.getElementById("expense-amount").value;
+        const categoria = document.getElementById("expense-category").value;
+        const notas = document.getElementById("expense-notes").value;
+
+        const newItem = {
+
+        }
+        fetch('/item/newItem/' + categoria, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ItemName : nombre,
+                ItemDescription : notas,
+                ItemPrice : cantidad,
+            })
+        })
+            .then(response => response.json())
+            .then(data => console.log('Respuesta:', data))
+            .catch(error => console.error('Error:', error));
+
+    }
 
     // Llamar a la función cuando se cargue la página
     calcularPorcentajes()
@@ -194,5 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
         item.style.transform = "translateX(20px)"
         item.style.transition = "opacity 0.5s ease, transform 0.5s ease"
     })
+    addItemForm.addEventListener("submit", addexpense)
 })
 
