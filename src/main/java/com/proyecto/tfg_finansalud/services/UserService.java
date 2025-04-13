@@ -62,9 +62,9 @@ public class UserService {
                 //el budget borrado debe coincidir con el NOMBRE Y FECHA ACTUAL PARA QUE NO SE ELIMINE REGISTROS ANTERIORES
 
                 Optional<Budget> budget = user.get().getBudgets().stream()
-                        .filter(a -> a.getName().equals(budgetName) && a.getYearMonth().equals(YearMonth.now().atDay(1)))
+                        .filter(a -> a.getName().equalsIgnoreCase(budgetName) && a.getYearMonth().equals(YearMonth.now().atDay(1)))
                         .findFirst();
-                if (!budget.isPresent()) {
+                if (budget.isEmpty()) {
                     return "nope";
                 }
                 if (remove)user.get().getBudgets().remove(budget.get());

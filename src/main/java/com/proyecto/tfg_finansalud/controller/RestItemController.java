@@ -44,25 +44,32 @@ public class RestItemController {
     }
     @PostMapping("/newItem/{budget}")
     public ResponseEntity<?> createItem(@RequestBody ItemDTO itemDTO, @PathVariable String budget) {
+
         try{
             Item newItem = itemMapper.tOEntity(itemDTO);
             String budgetID = userService.returnBudgetIDfromUser(budget, false);
             if (budgetID.equals("nope")) {
-                budgetService.save(Budget.builder().name(budget).budget(newItem.getItemPrice()).color("red").build());
-                budgetID = userService.returnBudgetIDfromUser(budget, false);
+                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             }
-            System.out.println(budgetID);
+
+
+
             Budget budget1 = budgetService.getBudget(budgetID);
             if (budget1 == null) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             itemService.save(newItem);
+            System.out.println(newItem);
             budget1.getItems().add(newItem);
+
+            budget1.setBudgetCount(budget1.getBudgetCount() + newItem.getItemPrice());
             budgetService.save(budget1);
+            System.out.println(budget1);
 
         }catch (Exception e){
+            log.error("e: ", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(null, HttpStatus.CREATED);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

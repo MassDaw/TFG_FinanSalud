@@ -558,16 +558,35 @@
         });
 
         // Manejar el envío de los formularios
-        document.getElementById('add-income-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Aquí iría la lógica para guardar el ingreso
-            console.log('Ingreso guardado');
-            incomeModal.hide();
-        });
+        // document.getElementById('add-income-form').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+        //     // Aquí iría la lógica para guardar el ingreso
+        //     console.log('Ingreso guardado');
+        //     incomeModal.hide();
+        // });
 
         document.getElementById('add-expense-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Aquí iría la lógica para guardar el gasto
+
+            const nombre = document.getElementById("expense-title").value;
+            const cantidad = document.getElementById("expense-amount").value;
+            const categoria = document.getElementById("expense-category").value;
+            const notas = document.getElementById("expense-notes").value;
+
+            fetch('/item/newItem/' + categoria, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    itemName:nombre,
+                    itemDescription:notas,
+                    itemPrice:cantidad
+                })
+            })
+                .then(response => response.json())
+                .then(data => console.log('Respuesta:', data))
+                .catch(error => console.error('Error:', error));
             console.log('Gasto guardado');
             expenseModal.hide();
         });

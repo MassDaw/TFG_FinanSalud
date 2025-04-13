@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -31,7 +31,7 @@ public class Budget {
 
     private Integer notiPorcentaje;
     @DBRef(lazy = false)
-    private List<Item> items;
+    private List<Item> items = new ArrayList<>();
 
 
 }

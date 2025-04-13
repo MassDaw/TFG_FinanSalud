@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemDTO {
-    private String ItemName;
-    private String ItemDescription;
-    private Double ItemPrice;
+    private String itemName;
+    private String itemDescription;
+    private Double itemPrice;
 }

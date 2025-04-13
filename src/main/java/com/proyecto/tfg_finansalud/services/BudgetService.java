@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,6 +29,7 @@ public class BudgetService {
     // todo budget que se cree, tendra como fecha el mes y año en curso
     public Budget save(Budget budget) {
         budget.setYearMonth(YearMonth.now().atDay(1));
+        budget.setItems(Arrays.asList());
         return budgetRepository.save(budget);
     }
 

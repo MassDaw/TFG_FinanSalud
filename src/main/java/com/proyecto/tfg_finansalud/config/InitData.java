@@ -40,7 +40,7 @@ public class InitData {
         profiles.add(profile);
         Usuario usuario = Usuario.builder().username("pao").email("pao@pao.com").password("pao").registrationDate(LocalDate.now()).profiles(profiles).build();
         Item x = Item.builder().itemName("zapato").build();
-        //itemService.save(x);  a
+        //itemService.save(x);
 
         List<Budget> budgets = Arrays.asList(
                 Budget.builder().name("entretenimiento").budget(400.0).budgetCount(0.0).color("red").yearMonth(YearMonth.now().atDay(1)).items(Arrays.asList(x)).build(),
