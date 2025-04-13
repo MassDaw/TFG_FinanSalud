@@ -6,7 +6,6 @@ let currentBudgetId = null
 const addModal = document.getElementById("add-modal")
 const editModal = document.getElementById("edit-modal")
 const addBudgetBtn = document.getElementById("add-budget")
-const editBudgetBtn = document.getElementById("edit-budget")
 const closeBtns = document.querySelectorAll(".close-btn")
 const addBudgetForm = document.getElementById("add-budget-form")
 const editBudgetForm = document.getElementById("edit-budget-form")
@@ -18,6 +17,8 @@ function setupCurrentDate() {
     const options = { month: "long", year: "numeric" }
     currentMonthElement.textContent = now.toLocaleDateString("es-ES", options)
 }
+
+
 
 // Cargar presupuestos desde el archivo JSON
 async function loadBudgets() {
@@ -73,7 +74,7 @@ function displayBudgets() {
                 <span class="budget-amount">${budget.budget.toFixed(2)} €</span>
             </div>
             <div class="budget-progress">
-                <div class="progress-bar" style="width: ${percentage}%; background-color: ${budget.color}"></div>
+                <div class="progress-bar" style="width: ${percentage}%; background-color: ${budget.color}; max-width: 100%"></div>
             </div>
             <div class="budget-footer">
                 <span class="budget-percentage">${percentage}% (${budget.budgetCount.toFixed(2)} €)</span>
@@ -414,6 +415,7 @@ function showNotification(message, type = "info") {
 document.addEventListener("DOMContentLoaded", async () => {
     setupCurrentDate()
     await loadBudgets()  // Esperar a que los presupuestos se carguen
+
 
     addBudgetBtn.addEventListener("click", openAddModal)
 
