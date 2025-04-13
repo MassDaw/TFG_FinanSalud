@@ -18,6 +18,52 @@ function setupCurrentDate() {
     currentMonthElement.textContent = now.toLocaleDateString("es-ES", options)
 }
 
+let budgetChart = null
+function updateChart() {
+    const ctx = document.getElementById('budgetChart').getContext('2d')
+
+    // Extraer datos
+    const labels = budgets.map(b => b.name)
+    const spentData = budgets.map(b => b.budgetCount)
+    const backgroundColors = budgets.map(b => b.color)
+
+    // Si ya existe un gráfico, destruirlo para evitar duplicados
+    if (budgetChart) {
+        budgetChart.destroy()
+    }
+
+    // Crear nuevo gráfico
+    budgetChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Gasto por categoría',
+                data: spentData,
+                backgroundColor: backgroundColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = spentData.reduce((a, b) => a + b, 0)
+                            const value = context.parsed
+                            const percent = ((value / total) * 100).toFixed(1)
+                            return `${context.label}: ${value.toFixed(2)} € (${percent}%)`
+                        }
+                    }
+                }
+            }
+        }
+    })
+}
 
 
 // Cargar presupuestos desde el archivo JSON
@@ -34,6 +80,9 @@ async function loadBudgets() {
         console.error("Error:", error)
         showNotification("Error al cargar los presupuestos", "error")
     }
+    displayBudgets()
+    updateChart()
+
 }
 
 // Mostrar los presupuestos en la interfaz
@@ -248,6 +297,9 @@ function addBudget(event) {
             // Si el usuario confirma, abrir el modal de edición para este presupuesto
             closeModals()
             openEditModal(categoryText)
+            displayBudgets()
+            updateChart()
+
             return
         } else {
             // Si el usuario cancela, no hacer nada
@@ -307,6 +359,9 @@ function updateBudget(event) {
     // Actualizar la interfaz
     displayBudgets()
     closeModals()
+    displayBudgets()
+    updateChart()
+
 
     showNotification("Presupuesto actualizado correctamente", "success")
 }
@@ -332,6 +387,7 @@ async function deleteBudget(name) {
             // Filtrar el presupuesto a eliminar si la respuesta es exitosa
             budgets = budgets.filter((b) => b.name !== name);
             displayBudgets();
+            updateChart()
             showNotification("Presupuesto eliminado correctamente", "success");
         } else {
             showNotification(`Error: ${result.message}`, "error");
@@ -374,6 +430,8 @@ async function editBudget(name, newBudgetAmount) {
                 b.name === name ? { ...b, budget: newBudgetAmount } : b
             );
             displayBudgets();
+            updateChart()
+
             showNotification("Presupuesto actualizado correctamente", "success");
         } else {
             showNotification(`Error: ${result.message || "Error desconocido"}`, "error");
