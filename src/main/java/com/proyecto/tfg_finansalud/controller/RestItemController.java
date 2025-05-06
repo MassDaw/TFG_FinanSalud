@@ -42,18 +42,15 @@ public class RestItemController {
 
 
     }
+
     @PostMapping("/newItem/{budget}")
     public ResponseEntity<?> createItem(@RequestBody ItemDTO itemDTO, @PathVariable String budget) {
-
         try{
             Item newItem = itemMapper.tOEntity(itemDTO);
             String budgetID = userService.returnBudgetIDfromUser(budget, false);
             if (budgetID.equals("nope")) {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             }
-
-
-
             Budget budget1 = budgetService.getBudget(budgetID);
             if (budget1 == null) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
