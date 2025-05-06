@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const stockCountElement = document.getElementById('stock-count');
     const connectionStatusElement = document.getElementById('connection-status');
 
+
     // Configurar eventos
     searchInput.addEventListener('input', function(e) {
         searchQuery = e.target.value.toLowerCase();
@@ -246,9 +247,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const buyButton = document.createElement('button');
             buyButton.className = 'buy-btn';
             buyButton.textContent = 'Comprar';
-            buyButton.addEventListener('click', function() {
-                alert(`Comprando ${asset.name} (${asset.symbol})`);
-            });
+            buyButton.addEventListener('click', (e) => { window.location.href = 'https://www.binance.com/es/trade/BTC_USDT?type=spot' });
+            document.body.appendChild(buyButton);
 
             buyCell.appendChild(buyButton);
 

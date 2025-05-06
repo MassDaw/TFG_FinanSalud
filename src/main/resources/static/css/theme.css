@@ -1607,3 +1607,7 @@ select:focus {
 .dashboard-grid {
     margin-bottom: 20px; /* Reducir el margen inferior excesivo */
 }
+#budgetChart {
+    width: 300px !important;
+    height: 300px !important;
+}
