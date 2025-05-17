@@ -34,7 +34,6 @@ public class RestItemController {
     public ResponseEntity<Map<String, List<Item>>> getItemsCurrentMonth() {
         try {
             List<String> budgetsID = userService.getBudgetID();//id de Budget del usuario en el mes actual
-
             return ResponseEntity.ok(
                     budgetService.getItemfromBudget(budgetsID));
         }catch (Exception e){
