@@ -17,53 +17,53 @@ function setupCurrentDate() {
     const options = { month: "long", year: "numeric" }
     currentMonthElement.textContent = now.toLocaleDateString("es-ES", options)
 }
-
-let budgetChart = null
-function updateChart() {
-    const ctx = document.getElementById('budgetChart').getContext('2d')
-
-    // Extraer datos
-    const labels = budgets.map(b => b.name)
-    const spentData = budgets.map(b => b.budgetCount)
-    const backgroundColors = budgets.map(b => b.color)
-
-    // Si ya existe un gráfico, destruirlo para evitar duplicados
-    if (budgetChart) {
-        budgetChart.destroy()
-    }
-
-    // Crear nuevo gráfico
-    budgetChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Gasto por categoría',
-                data: spentData,
-                backgroundColor: backgroundColors,
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const total = spentData.reduce((a, b) => a + b, 0)
-                            const value = context.parsed
-                            const percent = ((value / total) * 100).toFixed(1)
-                            return `${context.label}: ${value.toFixed(2)} € (${percent}%)`
-                        }
-                    }
-                }
-            }
-        }
-    })
-}
+//
+// let budgetChart = null
+// function updateChart() {
+//     const ctx = document.getElementById('budgetChart').getContext('2d')
+//
+//     // Extraer datos
+//     const labels = budgets.map(b => b.name)
+//     const spentData = budgets.map(b => b.budgetCount)
+//     const backgroundColors = budgets.map(b => b.color)
+//
+//     // Si ya existe un gráfico, destruirlo para evitar duplicados
+//     if (budgetChart) {
+//         budgetChart.destroy()
+//     }
+//
+//     // Crear nuevo gráfico
+//     budgetChart = new Chart(ctx, {
+//         type: 'doughnut',
+//         data: {
+//             labels: labels,
+//             datasets: [{
+//                 label: 'Gasto por categoría',
+//                 data: spentData,
+//                 backgroundColor: backgroundColors,
+//                 borderWidth: 1
+//             }]
+//         },
+//         options: {
+//             responsive: true,
+//             plugins: {
+//                 legend: {
+//                     position: 'bottom'
+//                 },
+//                 tooltip: {
+//                     callbacks: {
+//                         label: function(context) {
+//                             const total = spentData.reduce((a, b) => a + b, 0)
+//                             const value = context.parsed
+//                             const percent = ((value / total) * 100).toFixed(1)
+//                             return `${context.label}: ${value.toFixed(2)} € (${percent}%)`
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     })
+// }
 
 
 // Cargar presupuestos desde el archivo JSON
