@@ -381,11 +381,7 @@
                     <div class="mb-3">
                         <label for="income-category" class="form-label">Categoría</label>
                         <select class="form-select" id="income-category" required>
-                            <option value="salario">Salario</option>
-                            <option value="freelance">Freelance</option>
-                            <option value="inversiones">Inversiones</option>
-                            <option value="regalo">Regalo</option>
-                            <option value="otros">Otros</option>
+
                         </select>
                     </div>
                     <div class="mb-3">
@@ -423,14 +419,7 @@
                     <div class="mb-3">
                         <label for="expense-category" class="form-label">Categoría</label>
                         <select class="form-select" id="expense-category" required>
-                            <option value="alimentacion">Alimentación</option>
-                            <option value="ocio">Ocio</option>
-                            <option value="servicios">Servicios</option>
-                            <option value="transporte">Transporte</option>
-                            <option value="salud">Salud</option>
-                            <option value="educacion">Educación</option>
-                            <option value="hogar">Hogar</option>
-                            <option value="otros">Otros</option>
+
                         </select>
                     </div>
                     <div class="mb-3">
@@ -560,5 +549,31 @@
             });
     });
 </script>
+<script>// Función para abrir el modal y cargar categorías dinámicamente
+async function openExpenseModal() {
+    const modal = document.getElementById('expense-modal');
+    const categorySelect = document.getElementById('expense-category');
+    categorySelect.innerHTML = '';
+
+    try {
+        const response = await fetch('/budget/getAllId');
+        if (!response.ok) throw new Error('Error al cargar categorías');
+        const budgets = await response.json();
+
+        budgets.forEach(budget => {
+            const option = document.createElement('option');
+            option.value = budget.name;
+            option.textContent = budget.name;
+            categorySelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('No se pudieron cargar las categorías:', error);
+    }
+
+    modal.style.display = 'block';
+}
+
+// Abrir el modal al hacer clic en el botón
+document.getElementById('open-expense-modal-btn').addEventListener('click', openExpenseModal);</script>
 </body>
 </html>

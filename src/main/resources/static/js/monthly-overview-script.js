@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "Noviembre",
         "Diciembre",
     ]
+
     const currentDate = new Date()
     const currentMonthYear = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`
     document.getElementById("current-month").textContent = currentMonthYear

@@ -48,6 +48,7 @@ public class RestBudgetController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/new")
     public ResponseEntity<?> newBudget(@RequestBody BudgetDTO budgetDTO) {
         try {
