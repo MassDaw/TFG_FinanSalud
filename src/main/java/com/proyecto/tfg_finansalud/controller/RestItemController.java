@@ -30,6 +30,7 @@ public class RestItemController {
     private final ItemService itemService;
 
     @GetMapping("/currentMonth")
+    //Muestra todos los gastos de todas las categorías
     public ResponseEntity<Map<String, List<Item>>> getItemsCurrentMonth() {
         try {
             List<String> budgetsID = userService.getBudgetID();//id de Budget del usuario en el mes actual
@@ -39,7 +40,6 @@ public class RestItemController {
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
 
     }
 

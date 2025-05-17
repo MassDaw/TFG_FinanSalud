@@ -353,81 +353,8 @@
                 <h5 class="card-title mb-0">Transacciones Recientes</h5>
                 <button class="btn btn-sm btn-link text-decoration-none">Ver todas</button>
             </div>
-            <div class="list-group list-group-flush">
-                <div class="list-group-item d-flex align-items-center py-3 px-0 border-top">
-                    <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                        <i class="fas fa-briefcase text-primary"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-0">Salario</h6>
-                                <p class="text-muted small mb-0">15 Mar 2025</p>
-                            </div>
-                            <div class="text-success fw-bold">+€2,800.00</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="list-group-item d-flex align-items-center py-3 px-0">
-                    <div class="rounded-circle bg-danger bg-opacity-10 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                        <i class="fas fa-home text-danger"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-0">Alquiler</h6>
-                                <p class="text-muted small mb-0">5 Mar 2025</p>
-                            </div>
-                            <div class="text-danger fw-bold">-€850.00</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="list-group-item d-flex align-items-center py-3 px-0">
-                    <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                        <i class="fas fa-laptop-code text-primary"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-0">Freelance</h6>
-                                <p class="text-muted small mb-0">20 Mar 2025</p>
-                            </div>
-                            <div class="text-success fw-bold">+€450.00</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="list-group-item d-flex align-items-center py-3 px-0">
-                    <div class="rounded-circle bg-danger bg-opacity-10 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                        <i class="fas fa-shopping-cart text-danger"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-0">Supermercado</h6>
-                                <p class="text-muted small mb-0">8 Mar 2025</p>
-                            </div>
-                            <div class="text-danger fw-bold">-€125.50</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="list-group-item d-flex align-items-center py-3 px-0">
-                    <div class="rounded-circle bg-danger bg-opacity-10 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                        <i class="fas fa-utensils text-danger"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-0">Restaurante</h6>
-                                <p class="text-muted small mb-0">18 Mar 2025</p>
-                            </div>
-                            <div class="text-danger fw-bold">-€68.75</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="list-group list-group-flush" id="recent-transactions-list">
+                <!-- Aquí se insertarán las transacciones reales -->
             </div>
         </div>
     </div>
@@ -586,6 +513,56 @@
             console.log('Gasto guardado');
             expenseModal.hide();
         });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/item/currentMonth')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('recent-transactions-list');
+                container.innerHTML = ''; // Limpia el contenedor
+
+                // data es un objeto con categorías como claves y arrays de items como valores
+                let items = [];
+                Object.values(data).forEach(arr => items = items.concat(arr));
+
+                // Ordena por fecha si tienes ese campo (ajusta el nombre si es distinto)
+                items.sort((a, b) => new Date(b.itemDescription) - new Date(a.itemDescription));
+
+                // Muestra solo las 5 más recientes
+                items.slice(0, 5).forEach(item => {
+                    // Determina icono y color según categoría o tipo
+                    const isIncome = item.itemPrice > 0;
+                    const icon = isIncome ? 'fa-briefcase text-primary' : 'fa-shopping-cart text-danger';
+                    const colorClass = isIncome ? 'bg-primary bg-opacity-10' : 'bg-danger bg-opacity-10';
+                    const amountClass = isIncome ? 'text-success' : 'text-danger';
+                    const sign = isIncome ? '+' : '-';
+
+                    // Formatea la fecha (ajusta si tu campo es diferente)
+                    const date = item.itemDescription ? new Date(item.itemDescription).toLocaleDateString('es-ES') : '';
+
+                    container.innerHTML += `
+                    <div class="list-group-item d-flex align-items-center py-3 px-0">
+                        <div class="rounded-circle ${colorClass} p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">${item.itemName}</h6>
+                                    <p class="text-muted small mb-0">${date}</p>
+                                </div>
+                                <div class="${amountClass} fw-bold">${sign}€${Math.abs(item.itemPrice).toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                });
+            })
+            .catch(error => {
+                console.error('Error al cargar transacciones:', error);
+            });
     });
 </script>
 </body>
