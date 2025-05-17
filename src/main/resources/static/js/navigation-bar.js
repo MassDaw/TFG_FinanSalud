@@ -1,17 +1,22 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Obtener la ruta actual
+    // Activar el nav-link según la ruta
     const currentPath = window.location.pathname;
+    const navPresupuestos = document.getElementById('nav-presupuestos');
+    const navResumen = document.getElementById('nav-resumen');
+    const navAnadir = document.getElementById('nav-anadir');
+    const navProfile = document.getElementById('nav-profile');
+    const navMarket = document.getElementById('nav-market');
 
-    // Determinar qué botón debe estar activo basado en la ruta
-    if (currentPath.includes('dashboard.html')) {
-        document.getElementById('nav-presupuestos').classList.add('active');
-    } else if (currentPath.includes('monthly-overview.html')) {
-        document.getElementById('nav-resumen').classList.add('active');
-    } else if (currentPath.includes('image-upload-ocr.html')) {
-        document.getElementById('nav-anadir').classList.add('active');
-    } else if (currentPath.includes('profile.html')) {
-        document.getElementById('nav-profile').classList.add('active');
-    } else if (currentPath.includes('market.html')) {
-        document.getElementById('nav-market').classList.add('active');
-}});
+    if (currentPath.includes('dashboard')) {
+        navPresupuestos?.classList.add('active');
+    } else if (currentPath.includes('monthly-overview')) {
+        navResumen?.classList.add('active');
+    } else if (currentPath.includes('image-upload-ocr')) {
+        navAnadir?.classList.add('active');
+    } else if (currentPath.includes('profile')) {
+        navProfile?.classList.add('active');
+    } else if (currentPath.includes('market')) {
+        navMarket?.classList.add('active');
+    }
+});
 
