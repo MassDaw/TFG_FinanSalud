@@ -15,4 +15,7 @@ public interface BudgetMapper {
     BudgetDTO toDTO(Budget budget);
     List<Budget> toEntityList(List<BudgetDTO> budgetDTOList);
     List<BudgetDTO> toDTOList(List<Budget> budgetList);
+
+    BudgetDTO2 toDTO2 (Budget budget);
+    List<BudgetDTO2> toDTOList2 (List<Budget> budgetList);
 }

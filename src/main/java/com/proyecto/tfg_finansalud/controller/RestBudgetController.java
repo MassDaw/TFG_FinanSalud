@@ -39,6 +39,16 @@ public class RestBudgetController {
         }
 
     }
+    @GetMapping("/getAllId")
+    public ResponseEntity<List<BudgetDTO>> budgetID() {
+        try{
+            return ResponseEntity.ok(
+                budgetMapper.toDTOList(userService.getBudget())
+            );
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @PostMapping("/new")
     public ResponseEntity<?> newBudget(@RequestBody BudgetDTO budgetDTO) {
         try {
