@@ -135,6 +135,16 @@
     </div>
 
     <!-- Tarjeta de transacciones recientes -->
+
+    <!-- Botones personalizados para añadir ingresos y gastos (sin Bootstrap) -->
+    <div class="custom-buttons-container">
+        <button id="add-income" class="custom-button income-button">
+            <i class="fas fa-plus"></i> Añadir Ingreso
+        </button>
+        <button id="add-expense" class="custom-button expense-button">
+            <i class="fas fa-minus"></i> Añadir Gasto
+        </button>
+    </div>
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -261,29 +271,42 @@
             expenseModal.show();
         });
 
-        document.getElementById('add-expense-form').addEventListener('submit', function(e) {
+        document.getElementById('add-expense-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const nombre = document.getElementById("expense-title").value;
-            const cantidad = document.getElementById("expense-amount").value;
+            const cantidad = -Math.abs(parseFloat(document.getElementById("expense-amount").value)); // Negativo para gasto
             const categoria = document.getElementById("expense-category").value;
             const notas = document.getElementById("expense-notes").value;
 
-            fetch('/item/newItem/' + categoria, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    itemName:nombre,
-                    itemDescription:notas,
-                    itemPrice:cantidad
-                })
-            })
-                .then(response => response.json())
-                .then(data => console.log('Respuesta:', data))
-                .catch(error => console.error('Error:', error));
-            expenseModal.hide();
+            try {
+                const response = await fetch('/item/newItem/' + categoria, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        itemName: nombre,
+                        itemDescription: notas,
+                        itemPrice: cantidad,
+                        category: "EXPENSE", // O la categoría real si la tienes
+                        dateCreated: new Date().toISOString()
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+
+                // Cerrar el modal y limpiar formulario
+                const modal = bootstrap.Modal.getInstance(document.getElementById('expense-modal'));
+                modal.hide();
+                this.reset();
+
+                window.location.reload();
+            } catch (error) {
+                console.error('Error:', error);
+            }
         });
 
         document.getElementById('add-income-form').addEventListener('submit', function(e) {
@@ -320,47 +343,91 @@
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('recent-transactions-list');
-                container.innerHTML = ''; // Limpia el contenedor
+                container.innerHTML = '';
 
-                // data es un objeto con categorías como claves y arrays de items como valores
+                // Verifica si data es un array o un objeto
                 let items = [];
-                Object.values(data).forEach(arr => items = items.concat(arr));
+                if (Array.isArray(data)) {
+                    items = data;
+                } else if (typeof data === 'object' && data !== null) {
+                    // Si es un objeto, intentar extraer los items
+                    if (data.content) {
+                        items = data.content;
+                    } else {
+                        items = Object.values(data).flat();
+                    }
+                }
 
-                // Ordena por fecha si tienes ese campo (ajusta el nombre si es distinto)
-                items.sort((a, b) => new Date(b.itemDescription) - new Date(a.itemDescription));
+                // Asegurarse de que todos los elementos son válidos
+                items = items.filter(item => item && item.itemName && item.itemPrice !== undefined);
+
+                // Ordena por fecha de más reciente a más antigua
+                items.sort((a, b) => {
+                    const dateA = new Date(a.dateCreated || new Date());
+                    const dateB = new Date(b.dateCreated || new Date());
+                    return dateB - dateA;
+                });
+
+                if (items.length === 0) {
+                    container.innerHTML = `
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-info-circle mb-2"></i>
+                        <p>No hay transacciones recientes</p>
+                    </div>
+                `;
+                    return;
+                }
 
                 // Muestra solo las 5 más recientes
                 items.slice(0, 5).forEach(item => {
-                    // Determina icono y color según categoría o tipo
-                    const isIncome = item.itemPrice > 0;
-                    const icon = isIncome ? 'fa-briefcase text-primary' : 'fa-shopping-cart text-danger';
-                    const colorClass = isIncome ? 'bg-primary bg-opacity-10' : 'bg-danger bg-opacity-10';
-                    const amountClass = isIncome ? 'text-success' : 'text-danger';
-                    const sign = isIncome ? '+' : '-';
+                    try {
+                        // Determina si es ingreso o gasto
+                        const isIncome = item.category === 'INCOME' ||
+                            item.type === 'INCOME' ||
+                            parseFloat(item.itemPrice) > 0;
 
-                    // Formatea la fecha (ajusta si tu campo es diferente)
-                    const date = item.itemDescription ? new Date(item.itemDescription).toLocaleDateString('es-ES') : '';
+                        const icon = isIncome ? 'fa-arrow-down text-success' : 'fa-arrow-up text-danger';
+                        const colorClass = isIncome ? 'bg-success bg-opacity-10' : 'bg-danger bg-opacity-10';
+                        const amountClass = isIncome ? 'text-success' : 'text-danger';
+                        const sign = isIncome ? '+' : '-';
 
-                    container.innerHTML += `
-                    <div class="list-group-item d-flex align-items-center py-3 px-0">
-                        <div class="rounded-circle ${colorClass} p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                            <i class="fas ${icon}"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">${item.itemName}</h6>
-                                    <p class="text-muted small mb-0">${date}</p>
+                        // Formatea la fecha
+                        const date = new Date(item.dateCreated || new Date()).toLocaleDateString('es-ES', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        });
+
+                        container.innerHTML += `
+                        <div class="list-group-item d-flex align-items-center py-3 px-0">
+                            <div class="rounded-circle ${colorClass} p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="fas ${icon}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">${item.itemName}</h6>
+                                        <p class="text-muted small mb-0">${date}</p>
+                                    </div>
+                                    <div class="${amountClass} fw-bold">${sign}€${Math.abs(parseFloat(item.itemPrice)).toFixed(2)}</div>
                                 </div>
-                                <div class="${amountClass} fw-bold">${sign}€${Math.abs(item.itemPrice).toFixed(2)}</div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                    } catch (error) {
+                        console.error('Error al procesar item:', item, error);
+                    }
                 });
             })
             .catch(error => {
                 console.error('Error al cargar transacciones:', error);
+                const container = document.getElementById('recent-transactions-list');
+                container.innerHTML = `
+                <div class="text-center text-muted py-3">
+                    <i class="fas fa-exclamation-circle mb-2"></i>
+                    <p>No se pudieron cargar las transacciones</p>
+                </div>
+            `;
             });
     });
 </script>
