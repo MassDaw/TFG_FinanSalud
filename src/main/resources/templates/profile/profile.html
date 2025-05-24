@@ -10,27 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-
-<div class="container py-4">
-    <header class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-        <div class="d-flex align-items-center">
-            <div class="me-3">
-                <img src="/images/profile-pic.jpg" alt="Foto de perfil" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-            </div>
-            <div>
-                <h1 class="h3 mb-0 text-primary">Presupuestos</h1>
-                <p class="text-muted small mb-0">Controla tus gastos</p>
-            </div>
-        </div>
-        <div class="d-flex align-items-center">
-            <span id="current-month" class="me-2 fw-bold">Marzo 2025</span>
-            <button class="btn btn-outline-secondary btn-sm rounded-circle">
-                <i class="fas fa-calendar"></i>
-            </button>
-        </div>
-    </header>
-</div>
-
+<div id="header-placeholder"></div>
 <div class="container">
     <div class="dashboard-grid">
         <!-- Profile Section -->
@@ -120,6 +100,18 @@
 
 
 <div id="navigation-container"></div>
+<script>
+    // Cargar el header dinámicamente
+    fetch('/header')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-placeholder').innerHTML = data;
+            // Actualizar título y subtítulo después de cargar el header
+            document.getElementById('page-title').textContent = 'Perfil';
+            document.getElementById('page-subtitle').textContent = 'Todos tus datos en un solo lugar';
+        })
+        .catch(error => console.error('Error al cargar el header:', error));
+</script>
 <script>
     document.getElementById('btn-recomendacion').addEventListener('click', function() {
         const recomendacionDiv = document.getElementById('recomendacion-financiera');
