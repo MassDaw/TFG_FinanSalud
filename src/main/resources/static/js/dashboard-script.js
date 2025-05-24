@@ -81,7 +81,6 @@ async function loadBudgets() {
         showNotification("Error al cargar los presupuestos", "error")
     }
     displayBudgets()
-    updateChart()
 
 }
 

@@ -9,28 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
-
-<div class="container py-4">
-    <header class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-        <div class="d-flex align-items-center">
-            <div class="me-3">
-                <img src="/images/profile-pic.jpg" alt="Foto de perfil" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-            </div>
-            <div>
-                <h1 class="h3 mb-0 text-primary">Presupuestos</h1>
-                <p class="text-muted small mb-0">Controla tus gastos</p>
-            </div>
-        </div>
-        <div class="d-flex align-items-center">
-            <span id="current-month" class="me-2 fw-bold">Marzo 2025</span>
-            <button class="btn btn-outline-secondary btn-sm rounded-circle">
-                <i class="fas fa-calendar"></i>
-            </button>
-        </div>
-    </header>
-</div>
-
+<body class="bg-light">
+<div id="header-placeholder"></div>
 <div class="container">
     <div class="dashboard-grid">
         <!-- Profile Section -->
@@ -62,8 +42,7 @@
                 </div>
                 <button class="nav-btn next-btn">&gt;</button>
             </div>
-            <button class="btn btn-primary">Añadir</button>
-        </div>
+            <button class="btn btn-primary w-50 mx-auto d-block">Añadir</button>        </div>
 
         <!-- Information Section -->
         <div class="card info-card">
@@ -111,65 +90,56 @@
 
         <!-- Chart Section -->
         <div class="card chart-card">
-            <h2 class="section-title">Gráfico anual</h2>
-            <div class="chart-container">
-                <canvas id="annualChart"></canvas>
-            </div>
+            <h2 class="section-title">Recomendación financiera</h2>
+            <button id="btn-recomendacion" class="btn btn-success mb-2">Obtener recomendación</button>
+            <div id="recomendacion-financiera" class="alert alert-info mt-2" style="display:none;"></div>
         </div>
     </div>
 </div>
 
-<script>
-    // Datos de ejemplo para el gráfico
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('annualChart').getContext('2d');
-
-        const chartData = {
-            labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            datasets: [
-                {
-                    label: 'Ingresos',
-                    data: [750, 730, 650, 250, 100, 100, 200, 450, 500, 800, 500, 300],
-                    borderColor: '#ff7675',
-                    backgroundColor: 'rgba(255, 118, 117, 0.1)',
-                    tension: 0.4
-                },
-                {
-                    label: 'Gastos',
-                    data: [200, 250, 300, 450, 200, 350, 250, 300, 800, 350, 450, 950],
-                    borderColor: '#6c5ce7',
-                    backgroundColor: 'rgba(108, 92, 231, 0.1)',
-                    tension: 0.4
-                }
-            ]
-        };
-
-        new Chart(ctx, {
-            type: 'line',
-            data: chartData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    }
-                }
-            }
-        });
-    });
-</script>
 
 <div id="navigation-container"></div>
+<script>
+    // Cargar el header dinámicamente
+    fetch('/header')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-placeholder').innerHTML = data;
+            // Actualizar título y subtítulo después de cargar el header
+            document.getElementById('page-title').textContent = 'Tus activos financieros';
+            document.getElementById('page-subtitle').textContent = 'Gestiona tus inversiones';
 
+            // Inicializar el script del header después de que se haya cargado
+            const now = new Date();
+            const options = { month: 'long', year: 'numeric' };
+            const currentMonthElement = document.getElementById('current-month');
+            if (currentMonthElement) {
+                currentMonthElement.textContent = now.toLocaleDateString('es-ES', options)
+                    .replace(/^\w/, c => c.toUpperCase());
+            }
+        })
+        .catch(error => console.error('Error al cargar el header:', error));
+</script>
+<script>
+    document.getElementById('btn-recomendacion').addEventListener('click', function() {
+        const recomendacionDiv = document.getElementById('recomendacion-financiera');
+        recomendacionDiv.style.display = 'block';
+        recomendacionDiv.textContent = 'Cargando recomendación...';
+
+        fetch('/chat/finanzas')
+            .then(response => response.json())
+            .then(data => {
+                if (data.response) {
+                    recomendacionDiv.textContent = data.response;
+                } else {
+                    recomendacionDiv.textContent = 'No se pudo obtener la recomendación.';
+                }
+            })
+            .catch(() => {
+                recomendacionDiv.textContent = 'Error al conectar con el servidor.';
+            });
+    });
+</script>
 <script>
     // Cargar el componente de navegación
     fetch('/navigation-bar')

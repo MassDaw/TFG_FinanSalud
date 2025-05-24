@@ -42,10 +42,11 @@ public class MainController {
     public String getProfile() {
         return "/profile/profile";
     }
-    @GetMapping("/image-upload-ocr")
-    public String getImageUpload() {
-        return "/image-upload-ocr/image-upload-ocr";
-    }
+
+//    @GetMapping("/image-upload-ocr")
+//    public String getImageUpload() {
+//        return "/image-upload-ocr/image-upload-ocr";
+//    }
 
     @GetMapping("/market")
     public String getMarket() {

@@ -58,6 +58,7 @@ def chat_finanzas_personales(datos_financieros):
     return response.text
 
 
+
 def chat_with_gemini(user_input):
     model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
     response = model.generate_content(user_input)
@@ -85,6 +86,14 @@ def start_chatbot():
                 print(f"Bot: {response}\n")
             except Exception as e:
                 print(f"Error: {str(e)}\n")
+
+@app.get("/api/chat/finanzas")
+def chat_finanzas():
+    try:
+        respuesta = chat_finanzas_personales(datos_financieros)
+        return {"response": respuesta}
+    except Exception as e:
+        return {"error": str(e)}
 
 @app.get("/chat/{message}")
 async def chat(message: str):

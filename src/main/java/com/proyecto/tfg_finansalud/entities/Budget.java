@@ -33,5 +33,4 @@ public class Budget {
     @DBRef(lazy = false)
     private List<Item> items = new ArrayList<>();
 
-
 }
