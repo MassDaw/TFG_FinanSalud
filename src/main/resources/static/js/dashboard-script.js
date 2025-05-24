@@ -5,7 +5,7 @@ let currentBudgetId = null
 // Elementos DOM
 const addModal = document.getElementById("add-modal")
 const editModal = document.getElementById("edit-modal")
-const addBudgetBtn = document.getElementById("add-budget")
+const   addBudgetBtn = document.getElementById("add-budget")
 const closeBtns = document.querySelectorAll(".close-btn")
 const addBudgetForm = document.getElementById("add-budget-form")
 const editBudgetForm = document.getElementById("edit-budget-form")

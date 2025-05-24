@@ -42,14 +42,10 @@ public class RestItemController {
 
     }
 
-    @PostMapping("/newItem/{budget}")
-    public ResponseEntity<?> createItem(@RequestBody ItemDTO itemDTO, @PathVariable String budget) {
+    @PostMapping("/newItem/{budgetID}")
+    public ResponseEntity<?> createItem(@RequestBody ItemDTO itemDTO, @PathVariable String budgetID) {
         try{
             Item newItem = itemMapper.tOEntity(itemDTO);
-            String budgetID = userService.returnBudgetIDfromUser(budget, false);
-            if (budgetID.equals("nope")) {
-                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-            }
             Budget budget1 = budgetService.getBudget(budgetID);
             if (budget1 == null) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -66,6 +62,7 @@ public class RestItemController {
             log.error("e: ", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        System.out.println("------------------------------------------funciona");
+        return ResponseEntity.ok().build();
     }
 }

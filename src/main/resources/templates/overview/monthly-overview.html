@@ -381,7 +381,8 @@
                     <div class="mb-3">
                         <label for="income-category" class="form-label">Categoría</label>
                         <select class="form-select" id="income-category" required>
-
+                            <option selected value="salario">salario</option>
+                            <option selected value="inversion">inversion</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -494,9 +495,35 @@
                 .then(response => response.json())
                 .then(data => console.log('Respuesta:', data))
                 .catch(error => console.error('Error:', error));
+            expenseModal.hide();
+        });
+
+        document.getElementById('add-income-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const nombre = document.getElementById("income-title").value;
+            const cantidad = document.getElementById("income-amount").value;
+            const categoria = document.getElementById("income-category").value;
+            const notas = document.getElementById("income-notes").value;
+
+            fetch('/income/newItem/' + categoria, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    itemName:nombre,
+                    itemDescription:notas,
+                    itemPrice:cantidad
+                })
+            })
+                .then(response => response.json())
+                .then(data => console.log('Respuesta:', data))
+                .catch(error => console.error('Error:', error));
             console.log('Gasto guardado');
             expenseModal.hide();
         });
+
     });
 </script>
 <script>
