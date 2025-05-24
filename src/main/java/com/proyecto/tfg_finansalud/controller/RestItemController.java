@@ -22,7 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/item")
 @Slf4j
-public class RestItemController {
+public class    RestItemController {
     private final UserService userService;
     private final BudgetMapper budgetMapper;
     private final BudgetService budgetService;
@@ -50,12 +50,13 @@ public class RestItemController {
             if (budget1 == null) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            itemService.save(newItem);
+            newItem = itemService.save(newItem);
             System.out.println(newItem);
             budget1.getItems().add(newItem);
 
             budget1.setBudgetCount(budget1.getBudgetCount() + newItem.getItemPrice());
             budgetService.save(budget1);
+            budgetService.addItemtoBudget(budgetID, newItem);
             System.out.println(budget1);
 
         }catch (Exception e){

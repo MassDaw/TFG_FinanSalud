@@ -6,6 +6,11 @@ import com.proyecto.tfg_finansalud.entities.Item;
 import com.proyecto.tfg_finansalud.repositories.BudgetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
@@ -17,7 +22,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BudgetService {
     private final BudgetRepository budgetRepository;
-
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     public void saveAll(List<Budget> budgets) {
         budgetRepository.saveAll(budgets);
@@ -49,7 +55,6 @@ public class BudgetService {
 
     public Map<String, List<Item>> getItemfromBudget(List<String> budgets) {
         List<Budget> budgetList = budgetRepository.findAllByIdIn(budgets);
-        log.info("Lista de items " + budgetList);
         //crea un mapa donde la clave es la categoria y el valor una lista de gastos/items
 
         return budgetList.stream().collect(Collectors.toMap(Budget::getName, Budget::getItems));
@@ -58,5 +63,16 @@ public class BudgetService {
     public Budget getBudget(String id) {
         Optional<Budget> budget = budgetRepository.findById(id);
         return budget.orElse(null);
+    }
+
+    public void addItemtoBudget(String budgetId, Item item) {
+        Query query = new Query(Criteria.where("id").is(budgetId));
+
+        // Operación para agregar el item a la lista (push agrega al final)
+        Update update = new Update().push("items", item);
+
+        // Ejecutar la actualización
+        mongoTemplate.updateFirst(query, update, Budget.class);
+
     }
 }
