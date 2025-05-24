@@ -107,8 +107,17 @@
         .then(data => {
             document.getElementById('header-placeholder').innerHTML = data;
             // Actualizar título y subtítulo después de cargar el header
-            document.getElementById('page-title').textContent = 'Perfil';
-            document.getElementById('page-subtitle').textContent = 'Todos tus datos en un solo lugar';
+            document.getElementById('page-title').textContent = 'Tus activos financieros';
+            document.getElementById('page-subtitle').textContent = 'Gestiona tus inversiones';
+
+            // Inicializar el script del header después de que se haya cargado
+            const now = new Date();
+            const options = { month: 'long', year: 'numeric' };
+            const currentMonthElement = document.getElementById('current-month');
+            if (currentMonthElement) {
+                currentMonthElement.textContent = now.toLocaleDateString('es-ES', options)
+                    .replace(/^\w/, c => c.toUpperCase());
+            }
         })
         .catch(error => console.error('Error al cargar el header:', error));
 </script>
