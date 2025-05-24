@@ -111,65 +111,35 @@
 
         <!-- Chart Section -->
         <div class="card chart-card">
-            <h2 class="section-title">Gráfico anual</h2>
-            <div class="chart-container">
-                <canvas id="annualChart"></canvas>
-            </div>
+            <h2 class="section-title">Recomendación financiera</h2>
+            <button id="btn-recomendacion" class="btn btn-success mb-2">Obtener recomendación</button>
+            <div id="recomendacion-financiera" class="alert alert-info mt-2" style="display:none;"></div>
         </div>
     </div>
 </div>
 
-<script>
-    // Datos de ejemplo para el gráfico
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('annualChart').getContext('2d');
-
-        const chartData = {
-            labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-            datasets: [
-                {
-                    label: 'Ingresos',
-                    data: [750, 730, 650, 250, 100, 100, 200, 450, 500, 800, 500, 300],
-                    borderColor: '#ff7675',
-                    backgroundColor: 'rgba(255, 118, 117, 0.1)',
-                    tension: 0.4
-                },
-                {
-                    label: 'Gastos',
-                    data: [200, 250, 300, 450, 200, 350, 250, 300, 800, 350, 450, 950],
-                    borderColor: '#6c5ce7',
-                    backgroundColor: 'rgba(108, 92, 231, 0.1)',
-                    tension: 0.4
-                }
-            ]
-        };
-
-        new Chart(ctx, {
-            type: 'line',
-            data: chartData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    }
-                }
-            }
-        });
-    });
-</script>
 
 <div id="navigation-container"></div>
+<script>
+    document.getElementById('btn-recomendacion').addEventListener('click', function() {
+        const recomendacionDiv = document.getElementById('recomendacion-financiera');
+        recomendacionDiv.style.display = 'block';
+        recomendacionDiv.textContent = 'Cargando recomendación...';
 
+        fetch('/chat/finanzas')
+            .then(response => response.json())
+            .then(data => {
+                if (data.response) {
+                    recomendacionDiv.textContent = data.response;
+                } else {
+                    recomendacionDiv.textContent = 'No se pudo obtener la recomendación.';
+                }
+            })
+            .catch(() => {
+                recomendacionDiv.textContent = 'Error al conectar con el servidor.';
+            });
+    });
+</script>
 <script>
     // Cargar el componente de navegación
     fetch('/navigation-bar')

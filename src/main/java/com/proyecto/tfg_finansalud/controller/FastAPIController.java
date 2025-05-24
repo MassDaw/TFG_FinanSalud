@@ -51,4 +51,5 @@ public class FastAPIController {
         );
         return ResponseEntity.ok(response);
     }
+
 }
