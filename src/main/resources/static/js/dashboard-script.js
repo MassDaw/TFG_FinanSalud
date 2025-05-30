@@ -326,12 +326,23 @@ function addBudget(event) {
         body: JSON.stringify({
             name: categoryText,
             budget: amount,
-            budgetCount: 0, // Inicialmente no hay gasto
+            budgetCount: 0,
             color: color,
         })
     })
-        .then(response => response.json())
-        .then(data => console.log('Respuesta:', data))
+        .then(async response => {
+            const text = await response.text();
+            if (text) {
+                try {
+                    const data = JSON.parse(text);
+                    console.log('Respuesta:', data);
+                } catch (e) {
+                    console.warn('La respuesta no es JSON válido:', text);
+                }
+            } else {
+                console.log('Respuesta vacía');
+            }
+        })
         .catch(error => console.error('Error:', error));
     // Actualizar la interfaz
     displayBudgets()

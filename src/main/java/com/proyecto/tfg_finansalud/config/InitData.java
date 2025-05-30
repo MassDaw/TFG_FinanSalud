@@ -37,15 +37,15 @@ public class InitData {
         profiles.add(profile);
         Usuario usuario = Usuario.builder().username("pao").email("pao@pao.com").password("pao").registrationDate(LocalDate.now()).profiles(profiles).build();
         Item x = Item.builder().itemName("zapato").build();
-//            itemService.save(x);
+            itemService.save(x);
 
         List<Budget> budgets = Arrays.asList(
                 Budget.builder().name("entretenimiento").budget(400.0).budgetCount(0.0).color("red").yearMonth(YearMonth.now().atDay(1)).items(Arrays.asList(x)).build(),
                 Budget.builder().name("alimentación").budget(300.0).budgetCount(0.0).color("blue").yearMonth(YearMonth.now().atDay(1)).items(Arrays.asList()).build()
         );
         usuario.setBudgets(budgets);
-//           budgetService.saveAll(budgets); //comentar estas 2 líneas
-//            profileService.save(profile);
+            budgetService.saveAll(budgets); //comentar estas 2 líneas
+            profileService.save(profile);
 
 
         try {
