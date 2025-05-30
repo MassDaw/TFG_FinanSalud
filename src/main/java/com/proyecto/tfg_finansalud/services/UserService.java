@@ -1,10 +1,16 @@
 package com.proyecto.tfg_finansalud.services;
 
+import com.mongodb.client.result.UpdateResult;
 import com.proyecto.tfg_finansalud.entities.Budget;
 import com.proyecto.tfg_finansalud.entities.Income;
 import com.proyecto.tfg_finansalud.entities.Usuario;
 import com.proyecto.tfg_finansalud.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +26,8 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     public void save(Usuario user) throws Exception {
         Optional<Usuario> usuario = userRepository.findByUsername(user.getUsername());
@@ -48,14 +55,13 @@ public class UserService {
 
     //ASIGNA UN NUEVO BUDGET al usuario
     public void userNewBudget(Budget budget) throws Exception {
+        String username = getAuthenticatedUsername();
+        Query query = new Query(Criteria.where("username").is(username));
+        Update update = new Update().push("budgets", budget);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Usuario.class);
 
-        Optional<Usuario> user = userRepository.findByUsername(getAuthenticatedUsername());
-        if (user.isPresent()) {
-            user.get().getBudgets().add(budget);
-            userRepository.save(user.get());
-        }
-        else {
-            throw new Exception("Usuario no encontrado");
+        if (result.getModifiedCount() == 0) {
+            throw new Exception("Usuario no encontrado o no modificado");
         }
     }
     //BASADO EN EL NOMBRE DEL BUDGET, devuelve el ID del budget que sea del mes actual
