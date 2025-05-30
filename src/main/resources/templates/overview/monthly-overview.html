@@ -275,8 +275,8 @@
             e.preventDefault();
 
             const nombre = document.getElementById("expense-title").value;
-            const cantidad = -Math.abs(parseFloat(document.getElementById("expense-amount").value)); // Negativo para gasto
-            const categoria = document.getElementById("expense-category").value;
+            const cantidad = Math.abs(parseFloat(document.getElementById("expense-amount").value)); // Siempre positivo
+            const categoria = document.getElementById("expense-category").value; // <-- Añade esta línea
             const notas = document.getElementById("expense-notes").value;
 
             try {
