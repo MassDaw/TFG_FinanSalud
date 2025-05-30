@@ -29,5 +29,5 @@ public class Usuario {
     @DBRef(lazy = false) // DBRef  para que solo referencie ID /// (lazy = false) para que cargue TODOS los datos al llamar usuario
     List<Budget> budgets = new ArrayList<>();
     @DBRef
-    private Income income;
+    private Income income = new Income();
 }

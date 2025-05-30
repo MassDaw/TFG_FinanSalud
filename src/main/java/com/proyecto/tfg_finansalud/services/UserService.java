@@ -1,6 +1,7 @@
 package com.proyecto.tfg_finansalud.services;
 
 import com.proyecto.tfg_finansalud.entities.Budget;
+import com.proyecto.tfg_finansalud.entities.Income;
 import com.proyecto.tfg_finansalud.entities.Usuario;
 import com.proyecto.tfg_finansalud.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,10 @@ public class UserService {
     public List<String> getBudgetID() {
         return userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets().stream()
                 .filter(a->a.getYearMonth().equals(YearMonth.now().atDay(1))).map(Budget::getId).collect(Collectors.toList());
+    }
+
+    public List<String> getAllBudgetID() {
+        return userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets().stream().map(Budget::getId).collect(Collectors.toList());
     }
 
     //ASIGNA UN NUEVO BUDGET al usuario
@@ -90,4 +95,9 @@ public class UserService {
         }
     }
 
+
+    public Double getIncome (){
+        Optional<Usuario> user = userRepository.findByUsername((getAuthenticatedUsername()));
+        return user.get().getIncome().getIncomes();
+    }
 }

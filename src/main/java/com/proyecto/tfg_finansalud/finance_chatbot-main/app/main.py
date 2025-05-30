@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 import google.generativeai as genai
 from config import GEMINI_API_KEY
+import json
 
 templates = Jinja2Templates(directory="templates")
 
@@ -53,6 +54,7 @@ Por favor, responde en un solo párrafo breve y claro, usando un lenguaje positi
 
 def chat_finanzas_personales(datos_financieros):
     model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
+
     prompt = generar_prompt_finanzas(datos_financieros)
     response = model.generate_content(prompt)
     return response.text
@@ -87,13 +89,18 @@ def start_chatbot():
             except Exception as e:
                 print(f"Error: {str(e)}\n")
 
-@app.get("/api/chat/finanzas")
-def chat_finanzas():
+
+@app.post("/api/chat/finanzas")
+async def chat_finanzas(request: Request):
     try:
-        respuesta = chat_finanzas_personales(datos_financieros)
+        raw = await request.body()              # bytes
+        datos = json.loads(raw.decode("utf-8")) # ✅ convierte a dict
+        respuesta = chat_finanzas_personales(datos)  # ahora sí es dict
         return {"response": respuesta}
     except Exception as e:
         return {"error": str(e)}
+
+
 
 @app.get("/chat/{message}")
 async def chat(message: str):

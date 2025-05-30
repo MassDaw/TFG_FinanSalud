@@ -1,10 +1,7 @@
 package com.proyecto.tfg_finansalud.config;
 
 
-import com.proyecto.tfg_finansalud.entities.Budget;
-import com.proyecto.tfg_finansalud.entities.Item;
-import com.proyecto.tfg_finansalud.entities.Profile;
-import com.proyecto.tfg_finansalud.entities.Usuario;
+import com.proyecto.tfg_finansalud.entities.*;
 import com.proyecto.tfg_finansalud.services.BudgetService;
 import com.proyecto.tfg_finansalud.services.ItemService;
 import com.proyecto.tfg_finansalud.services.ProfileService;
@@ -47,8 +44,10 @@ public class InitData {
                 Budget.builder().name("alimentación").budget(300.0).budgetCount(0.0).color("blue").yearMonth(YearMonth.now().atDay(1)).items(Arrays.asList()).build()
         );
         usuario.setBudgets(budgets);
-//            budgetService.saveAll(budgets); //comentar estas 2 líneas
+//           budgetService.saveAll(budgets); //comentar estas 2 líneas
 //            profileService.save(profile);
+
+
         try {
             userService.save(usuario);
         }catch (Exception e){
