@@ -52,4 +52,6 @@ public class MainController {
     public String getMarket() {
         return "/market/market";
     }
+
+
 }

@@ -18,7 +18,7 @@
             <div class="profile-image">
                 <img src="/images/profile-pic.jpg" alt="Ana Bombardini" class="profile-pic">
             </div>
-            <h2 class="profile-name">Ana Bombardini</h2>
+            <h2 class="profile-name" id="profile-username">Cargando...</h2>
             <p class="profile-email">anabombardini@gmail.com</p>
             <button class="btn btn-primary">Editar</button>
         </div>
@@ -141,6 +141,16 @@
     });
 </script>
 <script>
+    fetch('/user/me')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('profile-username').textContent = data.username;
+        })
+        .catch(() => {
+            document.getElementById('profile-username').textContent = 'Usuario';
+        });
+</script>
+<script>
     // Cargar el componente de navegación
     fetch('/navigation-bar')
         .then(response => response.text())
@@ -148,5 +158,6 @@
             document.getElementById('navigation-container').innerHTML = data;
         });
 </script>
+
 </body>
 </html>
