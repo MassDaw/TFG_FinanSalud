@@ -20,10 +20,12 @@ import java.util.List;
 public class Income {
     @Id
     private String id;
-    private Double incomes;
-    private Integer month;
-
+    private String name;
+    @Builder.Default
+    private Double incomes = 0.0;
+    private LocalDate date;
 
     @DBRef(lazy = false)
+    @Builder.Default
     private List<Item> items = new ArrayList<>();
 }

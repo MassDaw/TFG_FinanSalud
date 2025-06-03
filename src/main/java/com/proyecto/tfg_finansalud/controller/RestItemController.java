@@ -29,6 +29,7 @@ public class    RestItemController {
     private final ItemMapper itemMapper;
     private final ItemService itemService;
 
+
     @GetMapping("/currentMonth")
     //Muestra todos los gastos de todas las categorías
     public ResponseEntity<Map<String, List<Item>>> getItemsCurrentMonth() {
@@ -51,11 +52,8 @@ public class    RestItemController {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             newItem = itemService.save(newItem);
-            System.out.println(newItem);
-            budget1.getItems().add(newItem);
 
             budget1.setBudgetCount(budget1.getBudgetCount() + newItem.getItemPrice());
-            budgetService.save(budget1);
             budgetService.addItemtoBudget(budgetID, newItem);
             System.out.println(budget1);
 

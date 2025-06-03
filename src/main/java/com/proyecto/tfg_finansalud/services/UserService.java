@@ -3,6 +3,7 @@ package com.proyecto.tfg_finansalud.services;
 import com.mongodb.client.result.UpdateResult;
 import com.proyecto.tfg_finansalud.entities.Budget;
 import com.proyecto.tfg_finansalud.entities.Income;
+import com.proyecto.tfg_finansalud.entities.Item;
 import com.proyecto.tfg_finansalud.entities.Usuario;
 import com.proyecto.tfg_finansalud.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -100,10 +104,51 @@ public class UserService {
             return principal.toString(); // Si el principal es solo un string
         }
     }
+    public Income getIncomeByBudgetName(String budgetName) throws Exception {
+        Optional<Usuario> user = userRepository.findByUsername((getAuthenticatedUsername()));
+        if (user.isEmpty()) {
+            throw new Exception("Usuario no encontrado");
+        }
+        System.out.println(user.get().getIncome());
+        List<String> incomeIds = Optional.ofNullable(user.get().getIncome())
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(Objects::nonNull)  // Filtra elementos nulos
+                .map(Income::getId)
+                .collect(Collectors.toList());
 
+
+
+        LocalDate now = LocalDate.now();
+        Query query = new Query();
+        query.addCriteria(
+                Criteria.where("id").in(incomeIds)
+                        .and("date").gte(now.withDayOfMonth(1)) // desde el primer día del mes
+                        .lte(now.withDayOfMonth(now.lengthOfMonth()))
+                        .and("name").is(budgetName)// hasta el último día del mes
+        );
+
+        return mongoTemplate.findOne(query, Income.class);
+    }
 
     public Double getIncome (){
         Optional<Usuario> user = userRepository.findByUsername((getAuthenticatedUsername()));
-        return user.get().getIncome().getIncomes();
+
+        List<Income> income = user.get().getIncome().stream().filter(a -> a.getDate().getMonth().equals(LocalDate.now().getMonth())).toList();
+
+
+
+        return income.stream().mapToDouble(Income::getIncomes).sum();
+    }
+
+    public void userNewIncome(Income income) throws Exception {
+        String username = getAuthenticatedUsername();
+        Query query = new Query(Criteria.where("username").is(username));
+        Update update = new Update().push("income", income);
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Usuario.class);
+
+        if (result.getModifiedCount() == 0) {
+            throw new Exception("Usuario no encontrado o no modificado");
+        }
     }
 }

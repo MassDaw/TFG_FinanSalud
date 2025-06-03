@@ -90,7 +90,7 @@
                     </div>
                     <div>
                         <h6 class="text-muted mb-1">Balance Total</h6>
-                        <h3 class="mb-1">€2,450.75</h3>
+                        <h3 class="mb-1" id="balanceTotal">€2,450.75</h3>
                         <p class="small text-success mb-0">
                             <i class="fas fa-arrow-up me-1"></i> 15.3% respecto al mes anterior
                         </p>
@@ -107,7 +107,7 @@
                     </div>
                     <div>
                         <h6 class="text-muted mb-1">Ingresos Totales</h6>
-                        <h3 class="mb-1">€3,850.00</h3>
+                        <h3 class="mb-1" id="ingresosTotales">€3,850.00</h3>
                         <p class="small text-success mb-0">
                             <i class="fas fa-arrow-up me-1"></i> 5.2% respecto al mes anterior
                         </p>
@@ -124,7 +124,7 @@
                     </div>
                     <div>
                         <h6 class="text-muted mb-1">Gastos Totales</h6>
-                        <h3 class="mb-1">€1,399.25</h3>
+                        <h3 class="mb-1" id="gastosTotales">€1,399.25</h3>
                         <p class="small text-danger mb-0">
                             <i class="fas fa-arrow-up me-1"></i> 8.7% respecto al mes anterior
                         </p>
@@ -149,7 +149,8 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="card-title mb-0">Transacciones Recientes</h5>
-                <button id="show-all-transactions" class="btn btn-sm btn-link text-decoration-none">Ver todas</button>            </div>
+                <button class="btn btn-sm btn-link text-decoration-none">Ver todas</button>
+            </div>
             <div class="list-group list-group-flush" id="recent-transactions-list">
                 <!-- Aquí se insertarán las transacciones reales -->
             </div>
@@ -336,60 +337,76 @@
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        let allTransactions = [];
+        fetch('/item/currentMonth')
+            .then(response => response.json())
+        fetch('/item/currentMonth')
+            .then(response => response.json())
+            .then(data => {
+                const allItems = [];
 
-        function renderTransactions(items, limit = 5) {
-            const container = document.getElementById('recent-transactions-list');
-            container.innerHTML = '';
+                // 🔁 Recorre cada categoría y sus ítems
+                for (const [category, items] of Object.entries(data)) {
+                    items.forEach(item => {
+                        item.category = category; // ➕ agrega la categoría a cada item
+                        allItems.push(item);
+                    });
+                }
 
-            let flatItems = Array.isArray(items) ? items : Object.values(items).flat();
-            flatItems = flatItems.filter(item => item && item.itemName && item.itemPrice !== undefined);
+                const container = document.getElementById('recent-transactions-list');
+                container.innerHTML = '';
 
-            if (flatItems.length === 0) {
-                container.innerHTML = `
+                const filteredItems = allItems.filter(item => item && item.itemName && item.itemPrice !== undefined);
+
+                if (filteredItems.length === 0) {
+                    container.innerHTML = `
                 <div class="text-center text-muted py-3">
                     <i class="fas fa-info-circle mb-2"></i>
                     <p>No hay transacciones recientes</p>
                 </div>
             `;
-                return;
-            }
+                    return;
+                }
 
-            flatItems.sort((a, b) => b.itemPrice - a.itemPrice);
-            (limit ? flatItems.slice(0, limit) : flatItems).forEach(item => {
-                container.innerHTML += `
+                filteredItems.slice(0, 5).forEach(item => {
+                    container.innerHTML += `
                 <div class="list-group-item d-flex align-items-center py-3 px-0">
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h6 class="mb-0">${item.itemName}</h6>
-                                <p class="text-muted small mb-0">${item.itemDescription || ''}</p>
+                                <p class="text-muted small mb-0">${item.category} ${item.itemDescription ? `– ${item.itemDescription}` : ''}</p>
                             </div>
                             <div class="fw-bold">€${parseFloat(item.itemPrice).toFixed(2)}</div>
                         </div>
                     </div>
                 </div>
             `;
+                });
+            })
+            .catch(error => {
+                console.error('Error al cargar transacciones:', error);
+                const container = document.getElementById('recent-transactions-list');
+                container.innerHTML = `
+            <div class="text-center text-muted py-3">
+                <i class="fas fa-exclamation-circle mb-2"></i>
+                <p>No se pudieron cargar las transacciones</p>
+            </div>
+        `;
+            })
+            .catch(error => {
+                console.error('Error al cargar transacciones:', error);
+                const container = document.getElementById('recent-transactions-list');
+                container.innerHTML = `
+                <div class="text-center text-muted py-3">
+                    <i class="fas fa-exclamation-circle mb-2"></i>
+                    <p>No se pudieron cargar las transacciones</p>
+                </div>
+            `;
             });
-        }
-
-        // Fetch inicial
-        fetch('/item/currentMonth')
-            .then(response => response.json())
-            .then(items => {
-                allTransactions = Array.isArray(items) ? items : Object.values(items).flat();
-                renderTransactions(allTransactions, 5);
-            });
-
-        // Listener "Ver todas"
-        const showAllBtn = document.getElementById('show-all-transactions');
-        if (showAllBtn) {
-            showAllBtn.addEventListener('click', function() {
-                renderTransactions(allTransactions, null); // Mostrar todas
-            });
-        }
-
-        // Modal de gastos
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
         const addExpenseBtn = document.getElementById('add-expense');
         const expenseModal = new bootstrap.Modal(document.getElementById('expense-modal'));
 
@@ -403,8 +420,8 @@
                 const budgets = await response.json();
                 budgets.forEach(budget => {
                     const option = document.createElement('option');
-                    option.value = budget.id;
-                    option.textContent = budget.categoria || budget.name;
+                    option.value = budget.id; // Usa el id como value
+                    option.textContent = budget.categoria || budget.name; // Usa la propiedad correcta para mostrar
                     categorySelect.appendChild(option);
                 });
             } catch (error) {
@@ -415,7 +432,6 @@
         });
     });
 </script>
-
 <script src="/js/header-script.js"></script>
 </body>
 </html>

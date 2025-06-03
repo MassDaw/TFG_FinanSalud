@@ -30,7 +30,6 @@ public class Budget {
     private LocalDate yearMonth;
 
     private Integer notiPorcentaje;
-    @DBRef(lazy = false)
     private List<Item> items = new ArrayList<>();
 
 }

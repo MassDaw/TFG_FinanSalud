@@ -32,7 +32,9 @@ public class BudgetService {
     // todo budget que se cree, tendra como fecha el mes y año en curso
     public Budget save(Budget budget) {
         budget.setYearMonth(YearMonth.now().atDay(1));
-        budget.setItems(Arrays.asList());
+        if (budget.getId().isEmpty()){
+            budget.setItems(Arrays.asList());
+        }
         return budgetRepository.save(budget);
     }
 
@@ -56,7 +58,10 @@ public class BudgetService {
     public Map<String, List<Item>> getItemfromBudget(List<String> budgets) {
         List<Budget> budgetList = budgetRepository.findAllByIdIn(budgets);
         //crea un mapa donde la clave es la categoria y el valor una lista de gastos/items
+        for (Budget b : budgetList) {
+            System.out.println("Presupuesto: " + b.getName() + ", Items: " + b.getItems().size());
 
+        }
         return budgetList.stream().collect(Collectors.toMap(Budget::getName, Budget::getItems));
     }
 
@@ -67,12 +72,13 @@ public class BudgetService {
 
     public void addItemtoBudget(String budgetId, Item item) {
         Query query = new Query(Criteria.where("id").is(budgetId));
-
+        System.out.println(query);
         // Operación para agregar el item a la lista (push agrega al final)
         Update update = new Update().push("items", item);
+        System.out.println(update);
 
         // Ejecutar la actualización
         mongoTemplate.updateFirst(query, update, Budget.class);
-
+        System.out.println(budgetRepository.findById(budgetId).get());
     }
 }

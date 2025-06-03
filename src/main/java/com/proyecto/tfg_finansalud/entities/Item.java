@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -23,5 +24,6 @@ public class Item {
     private String itemName;
     private String itemDescription;
     private Double itemPrice;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate itemDate;
 }
