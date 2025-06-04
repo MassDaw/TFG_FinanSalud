@@ -39,7 +39,6 @@ public class BudgetScheduler {
                 List<Budget> nuevosBudgets = usuario.getBudgets().stream()
                         .map(original -> Budget.builder()
                                 .name(original.getName())
-                                .description(original.getDescription())
                                 .budget(original.getBudget())
                                 .budgetCount(0.0)
                                 .color(original.getColor())

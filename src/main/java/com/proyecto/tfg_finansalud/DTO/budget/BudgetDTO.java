@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BudgetDTO {
     private String name;
-    private String description; //pc
     private Double budget;
     private Double budgetCount;
     private String color;

@@ -31,10 +31,17 @@ public class BudgetService {
 
     // todo budget que se cree, tendra como fecha el mes y año en curso
     public Budget save(Budget budget) {
+        // Establecer fecha actual
         budget.setYearMonth(YearMonth.now().atDay(1));
-        if (budget.getId().isEmpty()){
-            budget.setItems(Arrays.asList());
+        budget.setMonth(YearMonth.now().getMonthValue());
+
+        // Inicializar campos si es nuevo
+        if (budget.getId() == null) {
+            budget.setItems(new ArrayList<>());
+            budget.setBudgetCount(0.0);
+            budget.setNotiPorcentaje(80); // valor por defecto
         }
+
         return budgetRepository.save(budget);
     }
 
