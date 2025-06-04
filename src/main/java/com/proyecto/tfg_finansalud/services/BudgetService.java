@@ -79,13 +79,10 @@ public class BudgetService {
 
     public void addItemtoBudget(String budgetId, Item item) {
         Query query = new Query(Criteria.where("id").is(budgetId));
-        System.out.println(query);
-        // Operación para agregar el item a la lista (push agrega al final)
-        Update update = new Update().push("items", item);
-        System.out.println(update);
-
-        // Ejecutar la actualización
+        // Agrega el item y suma el precio al budgetCount
+        Update update = new Update()
+                .push("items", item)
+                .inc("budgetCount", item.getItemPrice());
         mongoTemplate.updateFirst(query, update, Budget.class);
-        System.out.println(budgetRepository.findById(budgetId).get());
     }
 }

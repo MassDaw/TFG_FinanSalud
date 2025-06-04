@@ -22,6 +22,7 @@ public class Budget {
     @Id
     private String id;
     private String name;
+    private String description; //pc
     private Double budget;
     private Double budgetCount;
     private String color;
