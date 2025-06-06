@@ -1,237 +1,84 @@
-import asyncio
+from flask import Flask
+from flask_sock import Sock
+import requests
 import json
-import random
-import websockets
-import threading
 import time
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Dict, Set
-import uvicorn
 from datetime import datetime
 
-# FastAPI configuration
-app = FastAPI(title="Dashboard Financial API")
+app = Flask(__name__)
+sock = Sock(app)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Configuración para API pública
+COINGECKO_API = "https://api.coingecko.com/api/v3"
+UPDATE_INTERVAL = 30  # segundos
 
-# Data models
-class Asset(BaseModel):
-    id: str
-    name: str
-    symbol: str
-    price: str
-    volume: str
-    isFavorite: bool = False
-
-class MarketData(BaseModel):
-    marketCap: str
-    volume24h: str
-    lastUpdated: str
-
-class MarketResponse(BaseModel):
-    market: MarketData
-    assets: List[Asset]
-
-# Market data
-crypto_market = MarketData(
-    marketCap="€2.74M",
-    volume24h="€113.95M",
-    lastUpdated="5 minutos"
-)
-
-stock_market = MarketData(
-    marketCap="€48.2M",
-    volume24h="€89.7M",
-    lastUpdated="5 minutos"
-)
-
-cryptos = [
-    Asset(id="1", name="Bitcoin", symbol="BTC", price="€82.882,76", volume="€42,08M"),
-    Asset(id="2", name="Ethereum", symbol="ETH", price="€3.787,71", volume="€17,42M"),
-    Asset(id="3", name="Tether", symbol="USDT", price="€1,00", volume="€62,87M"),
-    Asset(id="4", name="Ripple", symbol="XRP", price="€2,07", volume="€4,50M"),
-    Asset(id="5", name="Solana", symbol="SOL", price="€172,45", volume="€3,25M"),
-]
-
-stocks = [
-    Asset(id="1", name="Apple Inc.", symbol="AAPL", price="€82.882,76", volume="€42,08M"),
-    Asset(id="2", name="Microsoft", symbol="MSFT", price="€3.787,71", volume="€17,42M"),
-    Asset(id="3", name="Alphabet", symbol="GOOGL", price="€1,00", volume="€62,87M"),
-    Asset(id="4", name="Amazon", symbol="AMZN", price="€2,07", volume="€4,50M"),
-    Asset(id="5", name="Tesla", symbol="TSLA", price="€172,45", volume="€3,25M"),
-]
-
-# Store active WebSocket connections
-connected_clients: Set[websockets.WebSocketServerProtocol] = set()
-
-# Convert price string to float
-def convert_to_float(value: str) -> float:
+def format_number(number):
+    if number is None:
+        return "€0.00"
     try:
-        # Remove € and M, handle European number format
-        value = value.replace('€', '').replace('M', '').strip()
-        # Replace period (thousands separator) and comma (decimal separator)
-        value = value.replace('.', '').replace(',', '.')
-        return float(value)
-    except ValueError:
-        raise ValueError(f"Invalid price/volume format: {value}")
+        number = float(number)
+        if number >= 1_000_000_000:
+            return f"€{number/1_000_000_000:.2f}B"
+        elif number >= 1_000_000:
+            return f"€{number/1_000_000:.2f}M"
+        else:
+            return f"€{number:,.2f}"
+    except (TypeError, ValueError):
+        return "€0.00"
 
-# Format float to European price string
-def format_to_euro(value: float, is_volume: bool = False) -> str:
-    # Format with two decimal places, using period for thousands and comma for decimals
-    formatted = f"{value:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
-    return f"€{formatted}M" if is_volume else f"€{formatted}"
-
-# Simulate price updates
-def update_prices():
-    while True:
-        try:
-            for crypto in cryptos:
-                current_price = convert_to_float(crypto.price)
-                change = current_price * random.uniform(-0.02, 0.02)  # ±2%
-                new_price = current_price + change
-                crypto.price = format_to_euro(new_price)
-
-                current_volume = convert_to_float(crypto.volume)
-                volume_change = current_volume * random.uniform(-0.05, 0.05)  # ±5%
-                new_volume = current_volume + volume_change
-                crypto.volume = format_to_euro(new_volume, is_volume=True)
-
-            for stock in stocks:
-                current_price = convert_to_float(stock.price)
-                change = current_price * random.uniform(-0.01, 0.01)  # ±1%
-                new_price = current_price + change
-                stock.price = format_to_euro(new_price)
-
-                current_volume = convert_to_float(stock.volume)
-                volume_change = current_volume * random.uniform(-0.03, 0.03)  # ±3%
-                new_volume = current_volume + volume_change
-                stock.volume = format_to_euro(new_volume, is_volume=True)
-
-            crypto_market.lastUpdated = f"{datetime.now().strftime('%H:%M:%S')}"
-            stock_market.lastUpdated = f"{datetime.now().strftime('%H:%M:%S')}"
-
-            asyncio.run(broadcast_market_data())
-            print(f"Prices updated: {datetime.now().strftime('%H:%M:%S')}")
-            time.sleep(3)
-        except Exception as e:
-            print(f"Error updating prices: {e}")
-            time.sleep(5)
-
-# Broadcast market data to all WebSocket clients
-async def broadcast_market_data():
-    if not connected_clients:
-        return
-
-    crypto_data = {
-        "type": "crypto",
-        "market": crypto_market.dict(),
-        "assets": [crypto.dict() for crypto in cryptos]
-    }
-
-    stock_data = {
-        "type": "stock",
-        "market": stock_market.dict(),
-        "assets": [stock.dict() for stock in stocks]
-    }
-
-    crypto_json = json.dumps(crypto_data)
-    stock_json = json.dumps(stock_data)
-
-    disconnected_clients = set()
-    for client in connected_clients:
-        try:
-            await client.send(crypto_json)
-            await client.send(stock_json)
-        except websockets.exceptions.ConnectionClosed:
-            disconnected_clients.add(client)
-
-    for client in disconnected_clients:
-        connected_clients.remove(client)
-
-# WebSocket handler
-async def websocket_handler(websocket: websockets.WebSocketServerProtocol):
-    connected_clients.add(websocket)
-    print(f"Client connected. Total: {len(connected_clients)}")
-
+def get_crypto_data():
     try:
-        crypto_data = {
+        global_response = requests.get(f"{COINGECKO_API}/global")
+        global_response.raise_for_status()
+        global_data = global_response.json()
+
+        coins_response = requests.get(
+            f"{COINGECKO_API}/coins/markets",
+            params={
+                "vs_currency": "eur",
+                "order": "market_cap_desc",
+                "per_page": 50,
+                "sparkline": False
+            }
+        )
+        coins_response.raise_for_status()
+        coins = coins_response.json()
+
+        # Validación de datos globales
+        market_cap = global_data.get("data", {}).get("total_market_cap", {}).get("eur", 0)
+        volume_24h = global_data.get("data", {}).get("total_volume", {}).get("eur", 0)
+
+        market_data = {
+            "marketCap": format_number(market_cap),
+            "volume24h": format_number(volume_24h),
+            "lastUpdated": datetime.now().strftime("%H:%M:%S")
+        }
+
+        assets = [{
+            "id": coin.get("id", ""),
+            "name": coin.get("name", ""),
+            "symbol": coin.get("symbol", "").upper(),
+            "price": format_number(coin.get("current_price")),
+            "volume": format_number(coin.get("total_volume")),
+            "isFavorite": False
+        } for coin in coins if coin]
+
+        return {
             "type": "crypto",
-            "market": crypto_market.dict(),
-            "assets": [crypto.dict() for crypto in cryptos]
+            "market": market_data,
+            "assets": assets
         }
+    except Exception as e:
+        print(f"Error obteniendo datos: {e}")
+        return None
 
-        stock_data = {
-            "type": "stock",
-            "market": stock_market.dict(),
-            "assets": [stock.dict() for stock in stocks]
-        }
+@sock.route('/ws')
+def handle_websocket(ws):
+    while True:
+        data = get_crypto_data()
+        if data:
+            ws.send(json.dumps(data))
+        time.sleep(UPDATE_INTERVAL)
 
-        await websocket.send(json.dumps(crypto_data))
-        await websocket.send(json.dumps(stock_data))
-
-        async for message in websocket:
-            data = json.loads(message)
-            print(f"Received message: {data}")
-
-            if data.get("action") == "toggleFavorite":
-                asset_id = data.get("id")
-                asset_type = data.get("type")
-
-                if asset_type == "crypto":
-                    for crypto in cryptos:
-                        if crypto.id == asset_id:
-                            crypto.isFavorite = not crypto.isFavorite
-                            break
-                elif asset_type == "stock":
-                    for stock in stocks:
-                        if stock.id == asset_id:
-                            stock.isFavorite = not stock.isFavorite
-                            break
-
-    except websockets.exceptions.ConnectionClosed:
-        print("Connection closed")
-    finally:
-        connected_clients.remove(websocket)
-        print(f"Client disconnected. Total: {len(connected_clients)}")
-
-# Start WebSocket server
-async def start_websocket_server():
-    async with websockets.serve(websocket_handler, "0.0.0.0", 8001):
-        print("WebSocket server started at ws://0.0.0.0:8001")
-        await asyncio.Future()  # Run forever
-
-# Run WebSocket server in a separate thread
-def run_websocket_server():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(start_websocket_server())
-
-# REST API endpoints
-@app.get("/api/crypto-market", response_model=MarketResponse)
-def get_crypto_market():
-    return {"market": crypto_market, "assets": cryptos}
-
-@app.get("/api/stock-market", response_model=MarketResponse)
-def get_stock_market():
-    return {"market": stock_market, "assets": stocks}
-
-# Startup event
-@app.on_event("startup")
-def startup_event():
-    price_thread = threading.Thread(target=update_prices, daemon=True)
-    price_thread.start()
-
-    websocket_thread = threading.Thread(target=run_websocket_server, daemon=True)
-    websocket_thread.start()
-
-# Main entry point
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8008, reload=False)
+if __name__ == '__main__':
+    app.run(port=8001, debug=True)
