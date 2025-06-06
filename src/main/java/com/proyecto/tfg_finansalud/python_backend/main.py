@@ -80,5 +80,7 @@ def handle_websocket(ws):
             ws.send(json.dumps(data))
         time.sleep(UPDATE_INTERVAL)
 
+# ================== STOCKS ==================
+
 if __name__ == '__main__':
     app.run(port=8001, debug=True)
