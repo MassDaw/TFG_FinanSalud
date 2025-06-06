@@ -1,11 +1,9 @@
 package com.proyecto.tfg_finansalud.services;
 
 import com.mongodb.client.result.UpdateResult;
-import com.proyecto.tfg_finansalud.entities.Budget;
-import com.proyecto.tfg_finansalud.entities.Income;
-import com.proyecto.tfg_finansalud.entities.Item;
-import com.proyecto.tfg_finansalud.entities.Usuario;
+import com.proyecto.tfg_finansalud.entities.*;
 import com.proyecto.tfg_finansalud.repositories.UserRepository;
+import com.proyecto.tfg_finansalud.repositories.VerificationTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,11 +23,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+import java.util.UUID;
+
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final VerificationTokenRepository tokenRepository;
+    private final EmailService emailService;
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -38,10 +40,49 @@ public class UserService {
         if (usuario.isPresent()) {
             throw new Exception("Usuario ya existe");
         }
+        
+        // Establecer el estado de verificación como falso
+        user.setEmailVerified(false);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        
+        // Guardar el usuario
         userRepository.save(user);
+        
+        // Crear token de verificación
+        String token = generateVerificationToken();
+        VerificationToken verificationToken = new VerificationToken(token, user.getId());
+        tokenRepository.save(verificationToken);
+        
+        // Enviar email de verificación
+        emailService.sendVerificationEmail(user.getEmail(), token);
     }
 
+    public boolean verifyEmail(String token) {
+        Optional<VerificationToken> verificationToken = tokenRepository.findByToken(token);
+        
+        if (verificationToken.isPresent() && !verificationToken.get().isExpired() && !verificationToken.get().isUsed()) {
+            VerificationToken vToken = verificationToken.get();
+            Optional<Usuario> user = userRepository.findById(vToken.getUserId());
+            
+            if (user.isPresent()) {
+                Usuario usuario = user.get();
+                usuario.setEmailVerified(true);
+                userRepository.save(usuario);
+                
+                // Marcar el token como usado
+                vToken.setUsed(true);
+                tokenRepository.save(vToken);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String generateVerificationToken() {
+        return UUID.randomUUID().toString();
+    }
+    
+    // ... resto de los métodos existentes ...
     //Obtiene todos los presupuestos del usuario del MES EN CURSO
     public List<Budget> getBudget() {
         return userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets().stream()

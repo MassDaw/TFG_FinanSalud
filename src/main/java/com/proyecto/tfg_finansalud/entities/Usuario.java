@@ -33,4 +33,6 @@ public class Usuario {
     @DBRef
     @Builder.Default
     private List<Income> income = new ArrayList<>();
+    private boolean emailVerified;
+
 }

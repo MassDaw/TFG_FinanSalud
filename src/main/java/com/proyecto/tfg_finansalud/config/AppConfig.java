@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mongodb.lang.NonNull;
+import io.github.cdimascio.dotenv.Dotenv;
+import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -39,5 +41,18 @@ public class AppConfig {
             }
         };
     }
+    @PostConstruct
+    public void loadEnvVariables() {
+        Dotenv dotenv = Dotenv.configure()
+                .directory(".")
+                .filename(".env")
+                .load();
+
+        // Load environment variables
+        dotenv.entries().forEach(entry ->
+                System.setProperty(entry.getKey(), entry.getValue())
+        );
+    }
+
 
 }
