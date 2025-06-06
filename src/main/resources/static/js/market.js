@@ -1,325 +1,215 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Variables para almacenar datos
-    let cryptoMarket = {
-        marketCap: "€0.00M",
-        volume24h: "€0.00M",
-        lastUpdated: "..."
-    };
-
-    let stockMarket = {
-        marketCap: "€0.00M",
-        volume24h: "€0.00M",
-        lastUpdated: "..."
-    };
-
-    let cryptos = [];
-    let stocks = [];
-
-    // Variables de estado
+    const wsStocks = new WebSocket('ws://localhost:8001/ws_nfts');
+    const ws = new WebSocket('ws://localhost:8001/ws');
+    let cryptoData = null;
     let showOnlyFavorites = false;
     let searchQuery = '';
-    let websocket = null;
 
-    // Elementos DOM
     const searchInput = document.getElementById('search-input');
     const favoritesBtn = document.getElementById('favorites-btn');
     const cryptoTableBody = document.getElementById('crypto-table-body');
-    const stockTableBody = document.getElementById('stock-table-body');
     const cryptoCountElement = document.getElementById('crypto-count');
-    const stockCountElement = document.getElementById('stock-count');
-    const connectionStatusElement = document.getElementById('connection-status');
-
-
-    // Configurar eventos
-    searchInput.addEventListener('input', function(e) {
+    // Configuración de los listeners de eventos
+    searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value.toLowerCase();
-        renderAssetTables();
+        renderCryptoTable();
     });
 
-    favoritesBtn.addEventListener('click', function() {
+    favoritesBtn.addEventListener('click', () => {
         showOnlyFavorites = !showOnlyFavorites;
-        this.classList.toggle('active', showOnlyFavorites);
-        renderAssetTables();
+        favoritesBtn.classList.toggle('active', showOnlyFavorites);
+        renderCryptoTable();
     });
 
-    // Función para conectar al WebSocket de Python
-    function connectWebSocket() {
-        // Usar la URL del servidor WebSocket de Python
-        websocket = new WebSocket('ws://localhost:8001');
+    // Gestión de la conexión WebSocket
+    ws.onopen = () => {
+        console.log('Conexión WebSocket establecida');
+    };
 
-        websocket.onopen = function(event) {
-            console.log('Conectado al servidor WebSocket de Python');
-            updateConnectionStatus('Conectado', true);
-        };
+    ws.onclose = () => {
+        console.log('Conexión WebSocket cerrada');
+        // Intentar reconectar cada 5 segundos
+        setTimeout(() => {
+            window.location.reload();
+        }, 5000);
+    };
 
-        websocket.onmessage = function(event) {
-            try {
-                const data = JSON.parse(event.data);
-                console.log('Datos recibidos:', data.type);
+    ws.onerror = (error) => {
+        console.error('Error en WebSocket:', error);
+    };
 
-                if (data.type === 'crypto') {
-                    updateCryptoData(data);
-                } else if (data.type === 'stock') {
-                    updateStockData(data);
+    ws.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            if (data.type === 'crypto' && data.market) {
+                if (cryptoData?.assets) {
+                    const favorites = new Set(
+                        cryptoData.assets.filter(a => a.isFavorite).map(a => a.id)
+                    );
+                    data.assets = data.assets.map(asset => ({
+                        ...asset,
+                        isFavorite: favorites.has(asset.id)
+                    }));
                 }
-            } catch (error) {
-                console.error('Error al procesar mensaje:', error);
+                cryptoData = data;
+                updateUI();
             }
-        };
-
-        websocket.onclose = function(event) {
-            console.log('Desconectado del servidor WebSocket');
-            updateConnectionStatus('Desconectado', false);
-
-            // Intentar reconectar después de 5 segundos
-            setTimeout(connectWebSocket, 5000);
-        };
-
-        websocket.onerror = function(error) {
-            console.error('Error de WebSocket:', error);
-            updateConnectionStatus('Error de conexión', false);
-        };
-    }
-
-    // Función para actualizar el estado de conexión
-    function updateConnectionStatus(status, isConnected) {
-        if (connectionStatusElement) {
-            connectionStatusElement.textContent = status;
-            connectionStatusElement.className = isConnected ? 'status-connected' : 'status-disconnected';
+        } catch (error) {
+            console.error('Error procesando mensaje:', error);
         }
+    };
+
+    function updateUI() {
+        if (!cryptoData || !cryptoData.market) return;
+        document.getElementById('crypto-market-cap').textContent = cryptoData.market.marketCap;
+        document.getElementById('crypto-volume').textContent = cryptoData.market.volume24h;
+        document.getElementById('crypto-update-time').textContent = cryptoData.market.lastUpdated;
+        renderCryptoTable();
     }
 
-    // Función para actualizar datos de criptomonedas
-    function updateCryptoData(data) {
-        if (data && data.market && data.assets) {
-            cryptoMarket = data.market;
-
-            // Preservar el estado de favoritos
-            const favoriteMap = {};
-            cryptos.forEach(crypto => {
-                if (crypto.isFavorite) {
-                    favoriteMap[crypto.id] = true;
-                }
-            });
-
-            cryptos = data.assets.map(asset => ({
-                ...asset,
-                isFavorite: favoriteMap[asset.id] || asset.isFavorite || false
-            }));
-
-            updateMarketData();
-            renderAssetTables();
-        }
-    }
-
-    // Función para actualizar datos de acciones
-    function updateStockData(data) {
-        if (data && data.market && data.assets) {
-            stockMarket = data.market;
-
-            // Preservar el estado de favoritos
-            const favoriteMap = {};
-            stocks.forEach(stock => {
-                if (stock.isFavorite) {
-                    favoriteMap[stock.id] = true;
-                }
-            });
-
-            stocks = data.assets.map(asset => ({
-                ...asset,
-                isFavorite: favoriteMap[asset.id] || asset.isFavorite || false
-            }));
-
-            updateMarketData();
-            renderAssetTables();
-        }
-    }
-
-    // Función para actualizar datos de mercado en la UI
-    function updateMarketData() {
-        document.getElementById('crypto-market-cap').textContent = cryptoMarket.marketCap;
-        document.getElementById('crypto-volume').textContent = cryptoMarket.volume24h;
-        document.getElementById('crypto-update-time').textContent = cryptoMarket.lastUpdated;
-
-        document.getElementById('stock-market-cap').textContent = stockMarket.marketCap;
-        document.getElementById('stock-volume').textContent = stockMarket.volume24h;
-        document.getElementById('stock-update-time').textContent = stockMarket.lastUpdated;
-    }
-
-    // Función para renderizar tablas de activos
-    function renderAssetTables() {
-        const filteredCryptos = filterAssets(cryptos);
-        const filteredStocks = filterAssets(stocks);
-
-        renderAssetTable(cryptoTableBody, filteredCryptos, 'crypto');
-        renderAssetTable(stockTableBody, filteredStocks, 'stock');
-
-        // Actualizar contadores
-        cryptoCountElement.textContent = filteredCryptos.length;
-        stockCountElement.textContent = filteredStocks.length;
-    }
-
-    // Función para filtrar activos según búsqueda y favoritos
-    function filterAssets(assets) {
-        return assets.filter(asset => {
+    function renderCryptoTable() {
+        if (!cryptoData || !cryptoData.assets) return;
+        const filteredAssets = cryptoData.assets.filter(asset => {
             const matchesSearch =
                 searchQuery === '' ||
                 asset.name.toLowerCase().includes(searchQuery) ||
                 asset.symbol.toLowerCase().includes(searchQuery);
-
             return matchesSearch && (!showOnlyFavorites || asset.isFavorite);
         });
-    }
 
-    // Función para renderizar una tabla de activos
-    function renderAssetTable(tableBody, assets, type) {
-        tableBody.innerHTML = '';
+        cryptoCountElement.textContent = filteredAssets.length;
 
-        if (assets.length === 0) {
-            const row = document.createElement('tr');
-            const cell = document.createElement('td');
-            cell.colSpan = 3;
-            cell.className = 'empty-message';
-            cell.textContent = 'No se encontraron activos';
-            row.appendChild(cell);
-            tableBody.appendChild(row);
+        if (filteredAssets.length === 0) {
+            cryptoTableBody.innerHTML = '<tr><td colspan="3" class="empty-message">No se encontraron activos</td></tr>';
             return;
         }
 
-        assets.forEach(asset => {
-            const row = document.createElement('tr');
+        cryptoTableBody.innerHTML = filteredAssets.map(asset => `
+            <tr>
+                <td class="text-left">
+                    <div class="asset-name-container">
+                        <i class="fas fa-star favorite-star ${asset.isFavorite ? 'active' : ''}" data-id="${asset.id}"></i>
+                        <div class="asset-name">
+                            <div>${asset.name}</div>
+                            <div class="asset-symbol">${asset.symbol}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="asset-price-container">
+                        <div>${asset.price}</div>
+                        <div class="asset-volume">Vol: ${asset.volume}</div>
+                    </div>
+                </td>
+                <td class="text-center">
+<button class="buy-btn" onclick="window.location.href='https://www.binance.com/es/trade/${asset.symbol}_EUR?type=spot'">
+    Comprar
+</button>
+                </td>
+            </tr>
+        `).join('');
 
-            // Celda de nombre
-            const nameCell = document.createElement('td');
-            nameCell.className = 'text-left';
-
-            const nameContainer = document.createElement('div');
-            nameContainer.className = 'asset-name-container';
-
-            const starIcon = document.createElement('i');
-            starIcon.className = `fas fa-star favorite-star ${asset.isFavorite ? 'active' : ''}`;
-            starIcon.setAttribute('data-id', asset.id);
-            starIcon.setAttribute('data-type', type);
-            starIcon.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
-                const assetType = this.getAttribute('data-type');
-                toggleFavorite(id, assetType);
+        // Agregar listeners para los favoritos
+        cryptoTableBody.querySelectorAll('.favorite-star').forEach(star => {
+            star.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleFavorite(e.target.dataset.id);
             });
-
-            const nameDiv = document.createElement('div');
-            nameDiv.className = 'asset-name';
-
-            const nameText = document.createElement('div');
-            nameText.textContent = asset.name;
-
-            const symbolText = document.createElement('div');
-            symbolText.className = 'asset-symbol';
-            symbolText.textContent = asset.symbol;
-
-            nameDiv.appendChild(nameText);
-            nameDiv.appendChild(symbolText);
-            nameContainer.appendChild(starIcon);
-            nameContainer.appendChild(nameDiv);
-            nameCell.appendChild(nameContainer);
-
-            // Celda de precio
-            const priceCell = document.createElement('td');
-            priceCell.className = 'text-right';
-
-            const priceContainer = document.createElement('div');
-            priceContainer.className = 'asset-price-container';
-
-            const priceText = document.createElement('div');
-            priceText.textContent = asset.price;
-
-            const volumeText = document.createElement('div');
-            volumeText.className = 'asset-volume';
-            volumeText.textContent = `Vol: ${asset.volume}`;
-
-            priceContainer.appendChild(priceText);
-            priceContainer.appendChild(volumeText);
-            priceCell.appendChild(priceContainer);
-
-            // Celda de botón comprar
-            const buyCell = document.createElement('td');
-            buyCell.className = 'text-center';
-
-            const buyButton = document.createElement('button');
-            buyButton.className = 'buy-btn';
-            buyButton.textContent = 'Comprar';
-            buyButton.addEventListener('click', (e) => { window.location.href = 'https://www.binance.com/es/trade/BTC_USDT?type=spot' });
-            document.body.appendChild(buyButton);
-
-            buyCell.appendChild(buyButton);
-
-            // Añadir celdas a la fila
-            row.appendChild(nameCell);
-            row.appendChild(priceCell);
-            row.appendChild(buyCell);
-
-            // Añadir fila a la tabla
-            tableBody.appendChild(row);
         });
     }
 
-    // Función para marcar/desmarcar favoritos
-    function toggleFavorite(id, type) {
-        if (type === 'crypto') {
-            cryptos = cryptos.map(crypto =>
-                crypto.id === id ? {...crypto, isFavorite: !crypto.isFavorite} : crypto
-            );
-        } else {
-            stocks = stocks.map(stock =>
-                stock.id === id ? {...stock, isFavorite: !stock.isFavorite} : stock
-            );
-        }
-
-        // Enviar actualización al servidor WebSocket
-        if (websocket && websocket.readyState === WebSocket.OPEN) {
-            websocket.send(JSON.stringify({
-                action: 'toggleFavorite',
-                id: id,
-                type: type
-            }));
-        }
-
-        renderAssetTables();
+    function toggleFavorite(id) {
+        cryptoData.assets = cryptoData.assets.map(asset =>
+            asset.id === id ? { ...asset, isFavorite: !asset.isFavorite } : asset
+        );
+        renderCryptoTable();
     }
 
-    // Función para cargar datos iniciales (fallback si WebSocket falla)
-    async function fetchInitialData() {
+    const wsNFTs = new WebSocket('ws://localhost:8001/ws_nfts');
+    let nftData = null;
+    const nftTableBody = document.getElementById('nft-table-body');
+    const nftCountElement = document.getElementById('nft-count');
+
+    wsNFTs.onmessage = (event) => {
         try {
-            const cryptoResponse = await fetch('http://localhost:8000/api/crypto-market');
-            const cryptoData = await cryptoResponse.json();
-
-            cryptoMarket = cryptoData.market;
-            cryptos = cryptoData.assets;
-
-            const stockResponse = await fetch('http://localhost:8000/api/stock-market');
-            const stockData = await stockResponse.json();
-
-            stockMarket = stockData.market;
-            stocks = stockData.assets;
-
-            updateMarketData();
-            renderAssetTables();
-
-            console.log("Datos iniciales cargados");
+            const data = JSON.parse(event.data);
+            if (data.type === 'nft' && data.market) {
+                if (nftData?.assets) {
+                    const favorites = new Set(
+                        nftData.assets.filter(a => a.isFavorite).map(a => a.id)
+                    );
+                    data.assets = data.assets.map(asset => ({
+                        ...asset,
+                        isFavorite: favorites.has(asset.id)
+                    }));
+                }
+                nftData = data;
+                updateNFTUI();
+            }
         } catch (error) {
-            console.error("Error al cargar datos iniciales:", error);
+            console.error('Error procesando mensaje de NFTs:', error);
         }
+    };
+
+    function updateNFTUI() {
+        if (!nftData || !nftData.market) return;
+        document.getElementById('nft-market-cap').textContent = nftData.market.marketCap;
+        document.getElementById('nft-volume').textContent = nftData.market.volume24h;
+        document.getElementById('nft-update-time').textContent = nftData.market.lastUpdated;
+        renderNFTTable();
     }
 
-    // Iniciar conexión WebSocket
-    connectWebSocket();
+    function renderNFTTable() {
+        if (!nftData || !nftData.assets) return;
+        const filteredAssets = nftData.assets.filter(asset => {
+            const matchesSearch =
+                searchQuery === '' ||
+                asset.name.toLowerCase().includes(searchQuery) ||
+                asset.symbol.toLowerCase().includes(searchQuery);
+            return matchesSearch && (!showOnlyFavorites || asset.isFavorite);
+        });
 
-    // Cargar datos iniciales como fallback
-    fetchInitialData();
+        nftCountElement.textContent = filteredAssets.length;
 
-    // Manejar desconexión al cerrar la página
-    window.addEventListener('beforeunload', function() {
-        if (websocket) {
-            websocket.close();
+        if (filteredAssets.length === 0) {
+            nftTableBody.innerHTML = '<tr><td colspan="4" class="empty-message">No se encontraron NFTs</td></tr>';
+            return;
         }
-    });
+
+        nftTableBody.innerHTML = filteredAssets.map(asset => `
+        <tr>
+            <td class="text-left">
+                <div class="asset-name-container">
+                    <i class="fas fa-star favorite-star ${asset.isFavorite ? 'active' : ''}" data-id="${asset.id}"></i>
+                    <img src="${asset.image}" alt="${asset.name}" class="nft-image"/>
+                    <div class="asset-name">
+                        <div>${asset.name}</div>
+                        <div class="asset-symbol">${asset.symbol}</div>
+                    </div>
+                </div>
+            </td>
+            <td class="text-right">${asset.price}</td>
+            <td class="text-right">${asset.volume}</td>
+            <td class="text-center">
+                <button class="buy-btn" onclick="window.open('https://opensea.io/assets/${asset.id}', '_blank')">
+                    Ver NFT
+                </button>
+            </td>
+        </tr>
+    `).join('');
+
+        nftTableBody.querySelectorAll('.favorite-star').forEach(star => {
+            star.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleNFTFavorite(e.target.dataset.id);
+            });
+        });
+    }
+
+    function toggleNFTFavorite(id) {
+        nftData.assets = nftData.assets.map(asset =>
+            asset.id === id ? { ...asset, isFavorite: !asset.isFavorite } : asset
+        );
+        renderNFTTable();
+    }
 });

@@ -80,7 +80,55 @@ def handle_websocket(ws):
             ws.send(json.dumps(data))
         time.sleep(UPDATE_INTERVAL)
 
-# ================== STOCKS ==================
+# ================== NFT ==================
+
+import os
+
+MORALIS_API = "https://deep-index.moralis.io/api/v2/nft/market"
+MORALIS_API_KEY = os.getenv("MORALIS_API_KEY")  # Debes definir tu API Key
+
+def get_nft_data():
+    try:
+        headers = {
+            "accept": "application/json",
+            "X-API-Key": MORALIS_API_KEY
+        }
+        response = requests.get(MORALIS_API, headers=headers, params={"chain": "eth", "limit": 20})
+        response.raise_for_status()
+        nfts = response.json().get("result", [])
+
+        market_data = {
+            "marketCap": "N/A",  # Puedes calcular si la API lo permite
+            "volume24h": "N/A",
+            "lastUpdated": datetime.now().strftime("%H:%M:%S")
+        }
+
+        assets = [{
+            "id": nft.get("token_address", "") + "-" + nft.get("token_id", ""),
+            "name": nft.get("name", "NFT"),
+            "symbol": nft.get("symbol", "NFT"),
+            "price": nft.get("price", "N/A"),  # Si la API lo permite
+            "volume": nft.get("amount", "N/A"),
+            "image": nft.get("image", ""),
+            "isFavorite": False
+        } for nft in nfts]
+
+        return {
+            "type": "nft",
+            "market": market_data,
+            "assets": assets
+        }
+    except Exception as e:
+        print(f"Error obteniendo NFTs: {e}")
+        return None
+
+@sock.route('/ws_nfts')
+def handle_nft_websocket(ws):
+    while True:
+        data = get_nft_data()
+        if data:
+            ws.send(json.dumps(data))
+        time.sleep(UPDATE_INTERVAL)
 
 if __name__ == '__main__':
     app.run(port=8001, debug=True)
