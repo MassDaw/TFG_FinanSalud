@@ -32,4 +32,10 @@ public class Budget {
     private Integer notiPorcentaje;
     private List<Item> items = new ArrayList<>();
 
+
+    public Double getNegativo() {
+
+        return budgetCount - budgetCount*2;
+    }
+
 }

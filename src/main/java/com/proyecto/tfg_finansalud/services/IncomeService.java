@@ -1,5 +1,6 @@
 package com.proyecto.tfg_finansalud.services;
 
+import com.proyecto.tfg_finansalud.entities.Budget;
 import com.proyecto.tfg_finansalud.entities.Income;
 import com.proyecto.tfg_finansalud.entities.Item;
 import com.proyecto.tfg_finansalud.repositories.IncomeRepository;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -43,7 +47,11 @@ public class IncomeService {
         return incomeRepository.save(income);
     }
 
+    public Map<String, List<Item>> getItemfromIncome(List<String> incomes) {
+        List<Budget> budgetList = incomeRepository.findAllByIdIn(incomes);
 
+        return budgetList.stream().collect(Collectors.toMap(Budget::getName, Budget::getItems));
+    }
 //    public String getCurrentUserId() {
 //        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //

@@ -65,10 +65,7 @@ public class BudgetService {
     public Map<String, List<Item>> getItemfromBudget(List<String> budgets) {
         List<Budget> budgetList = budgetRepository.findAllByIdIn(budgets);
         //crea un mapa donde la clave es la categoria y el valor una lista de gastos/items
-        for (Budget b : budgetList) {
-            System.out.println("Presupuesto: " + b.getName() + ", Items: " + b.getItems().size());
 
-        }
         return budgetList.stream().collect(Collectors.toMap(Budget::getName, Budget::getItems));
     }
 
@@ -85,4 +82,5 @@ public class BudgetService {
                 .inc("budgetCount", item.getItemPrice());
         mongoTemplate.updateFirst(query, update, Budget.class);
     }
+
 }

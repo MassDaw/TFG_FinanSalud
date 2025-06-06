@@ -6,6 +6,7 @@ import com.proyecto.tfg_finansalud.DTO.budget.BudgetMapper;
 import com.proyecto.tfg_finansalud.entities.Budget;
 import com.proyecto.tfg_finansalud.entities.Item;
 import com.proyecto.tfg_finansalud.services.BudgetService;
+import com.proyecto.tfg_finansalud.services.IncomeService;
 import com.proyecto.tfg_finansalud.services.ItemService;
 import com.proyecto.tfg_finansalud.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ public class    RestItemController {
     private final BudgetService budgetService;
     private final ItemMapper itemMapper;
     private final ItemService itemService;
+    private final IncomeService incomeService;
 
 
     @GetMapping("/currentMonth")
@@ -35,9 +38,19 @@ public class    RestItemController {
     public ResponseEntity<Map<String, List<Item>>> getItemsCurrentMonth() {
         try {
             List<String> budgetsID = userService.getBudgetID();//id de Budget del usuario en el mes actual
-            return ResponseEntity.ok(
-                    budgetService.getItemfromBudget(budgetsID));
+            List<String> IncomeID = userService.getIncomeID();//id de Income del usuario en el mes actual
+            Map<String, List<Item>> budget = budgetService.getItemfromBudget(budgetsID);
+            Map<String, List<Item>> incomes = incomeService.getItemfromIncome(IncomeID);
+            Map<String, List<Item>> mergedMap = new HashMap<>(budget);
+            for (Map.Entry<String, List<Item>> entry : incomes.entrySet()) {
+                mergedMap.merge(entry.getKey(), entry.getValue(), (list1, list2) -> {
+                    list1.addAll(list2);
+                    return list1;
+                });
+            }
+            return ResponseEntity.ok(mergedMap);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -47,6 +60,7 @@ public class    RestItemController {
     public ResponseEntity<?> createItem(@RequestBody ItemDTO itemDTO, @PathVariable String budgetID) {
         try{
             Item newItem = itemMapper.tOEntity(itemDTO);
+            newItem.setIncome(false); // Indica que este item no es de ingresos
             Budget budget1 = budgetService.getBudget(budgetID);
             if (budget1 == null) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

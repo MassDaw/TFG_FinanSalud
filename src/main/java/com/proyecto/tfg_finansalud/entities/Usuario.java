@@ -25,7 +25,9 @@ public class Usuario {
     private String password;
     private LocalDate registrationDate;
 
+    @Builder.Default
     Set<Profile> profiles = new HashSet<>();
+    @Builder.Default
     @DBRef(lazy = false) // DBRef  para que solo referencie ID /// (lazy = false) para que cargue TODOS los datos al llamar usuario
     List<Budget> budgets = new ArrayList<>();
     @DBRef

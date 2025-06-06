@@ -26,4 +26,5 @@ public class Item {
     private Double itemPrice;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate itemDate;
+    private Boolean Income; // true si es ingreso, false si es gasto
 }

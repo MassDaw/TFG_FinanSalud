@@ -311,17 +311,18 @@
             fetch('/income/newItem/' + categoria, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content\-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    itemName:nombre,
-                    itemDescription:notas,
-                    itemPrice:cantidad
+                    itemName: nombre,
+                    itemDescription: notas,
+                    itemPrice: cantidad
                 })
             })
-                .then(response => response.json())
+                .then(response => response.text())
                 .then(data => console.log('Respuesta:', data))
                 .catch(error => console.error('Error:', error));
+
             console.log('Gasto guardado');
             expenseModal.hide();
         });
@@ -330,8 +331,6 @@
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        fetch('/item/currentMonth')
-            .then(response => response.json())
         fetch('/item/currentMonth')
             .then(response => response.json())
             .then(data => {

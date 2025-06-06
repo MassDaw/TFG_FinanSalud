@@ -20,6 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/income")
@@ -33,6 +36,7 @@ public class RestIncomeController {
     @PostMapping("/newItem/{categoria}")
     public ResponseEntity<?> newItem(@RequestBody ItemDTO itemDTO, @PathVariable String categoria) {
         Item item = itemMapper.tOEntity(itemDTO);
+        item.setIncome(true);
         itemService.save(item);
         try {
             Income income = userService.getIncomeByBudgetName(categoria);
@@ -42,13 +46,15 @@ public class RestIncomeController {
             }
             incomeService.addItemToIncome(income.getId(), item);
 
-
-            return ResponseEntity.ok().build();
-        }catch (Exception e){
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Respuesta: Item creado y añadido a la categoría " + categoria);
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e){
             e.printStackTrace();
         }
 
         return new ResponseEntity<>(item, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 
 }

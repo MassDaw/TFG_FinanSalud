@@ -52,6 +52,19 @@ public class UserService {
         return userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets().stream()
                 .filter(a->a.getYearMonth().equals(YearMonth.now().atDay(1))).map(Budget::getId).collect(Collectors.toList());
     }
+    public List<String> getIncomeID() {
+        return userRepository.findByUsername(getAuthenticatedUsername())
+                .map(user -> Optional.ofNullable(user.getIncome())
+                        .orElse(Collections.emptyList())
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .filter(income -> Optional.ofNullable(income.getDate())
+                                .map(date -> date.equals(YearMonth.now().atDay(1)))
+                                .orElse(false))
+                        .map(Income::getId)
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+    }
 
     public List<String> getAllBudgetID() {
         return userRepository.findByUsername(getAuthenticatedUsername()).get().getBudgets().stream().map(Budget::getId).collect(Collectors.toList());
@@ -61,6 +74,7 @@ public class UserService {
     public void userNewBudget(Budget budget) throws Exception {
         String username = getAuthenticatedUsername();
         Query query = new Query(Criteria.where("username").is(username));
+
         Update update = new Update().push("budgets", budget);
         UpdateResult result = mongoTemplate.updateFirst(query, update, Usuario.class);
 
