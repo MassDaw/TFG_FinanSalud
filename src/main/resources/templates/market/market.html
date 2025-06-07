@@ -17,20 +17,27 @@
 <div class="container">
     <div class="market-cards">
         <!-- Tarjeta de Mercado de Criptomonedas -->
-        <div class="market-card crypto-card">
-            <h2>Mercado de criptomonedas</h2>
-            <p class="update-time">Actualizado hace <span id="crypto-update-time">5</span> minutos</p>
-
-            <div class="market-stats">
-                <div class="stat">
-                    <p class="stat-label">Cap. de mercado</p>
-                    <p class="stat-value" id="crypto-market-cap">€2.74M</p>
-                </div>
-                <div class="stat">
-                    <p class="stat-label">Volumen 24h</p>
-                    <p class="stat-value" id="crypto-volume">€113.95M</p>
+        <div class="market-card crypto-card d-flex justify-content-between align-items-center">
+            <div>
+                <h2>Mercado de criptomonedas</h2>
+                <p class="update-time">Actualizado hace <span id="crypto-update-time">5</span> minutos</p>
+                <div class="market-stats">
+                    <div class="stat">
+                        <p class="stat-label">Cap. de mercado</p>
+                        <p class="stat-value" id="crypto-market-cap">Cargando datos...</p>
+                    </div>
+                    <div class="stat">
+                        <p class="stat-label">Volumen 24h</p>
+                        <p class="stat-value" id="crypto-volume">Cargando datos...</p>
+                    </div>
                 </div>
             </div>
+            <a href="https://magiceden.io/popular-collections?filters=%7B%22timeWindow%22%3A%221d%22%2C%22collectionType%22%3A%22all%22%2C%22sortColumn%22%3A%22volume%22%2C%22sortDirection%22%3A%22desc%22%2C%22hideSpamCollections%22%3Atrue%7D&activeTab=%22TOP%22" target="_blank" class="nft-dia-link">
+                <div class="nft-dia-container">
+                    <img src="https://img-cdn.magiceden.dev/da:t/rs:fill:400:0:0/plain/https%3A%2F%2Fimg.reservoir.tools%2Fimages%2Fv2%2Fberachain%2FKWP%252BLl53XAYjHxnq%252FglaRydyR111BkOfG5qovALMNqbgfMnPuDufAvW83AUf%252F08B5MRXYDr%252BsEiMGT%252BlgxAVOesLVtk2saVcLdvSVzaXH1jNdn6bTMoQjDhmxX5Giy11.png" alt="NFT del día" class="nft-dia-img">
+                    <div class="nft-dia-text">NFT del día</div>
+                </div>
+            </a>
         </div>
 
         <!-- Tarjeta de Mercado de Acciones -->
@@ -60,8 +67,8 @@
             <table class="asset-table">
                 <thead>
                 <tr>
-                    <th class="text-left">Nombre</th>
-                    <th class="text-right">Precio</th>
+                    <th class="text-left">Activo</th>
+                    <th class="text-center">Precio</th>
                     <th class="text-center">Comprar</th>
                 </tr>
                 </thead>

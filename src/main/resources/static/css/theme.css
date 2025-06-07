@@ -445,13 +445,29 @@ select:focus {
 }
 
 .market-card {
-    background-color: var(--secondary-color);
-    color: white;
+    background-image: url('/images/kurp2.jpg');    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    /* Mantiene el padding y border-radius existentes */
+    z-index: 1;
+    overflow: hidden;    color: white;
     border-radius: var(--border-radius);
     padding: 20px;
     box-shadow: var(--shadow-md);
 }
-
+.market-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(67, 153, 225, 0.55); /* azul translúcido */
+    z-index: 2;
+    border-radius: var(--border-radius);
+}
+.market-card > * {
+    position: relative;
+    z-index: 3;
+}
 .market-card h2 {
     font-size: 1.5rem;
     margin-bottom: 5px;
@@ -623,14 +639,47 @@ select:focus {
 .asset-price-container {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center; /* Cambia de flex-end a center */
 }
 
 .asset-volume {
     font-size: 0.8rem;
     color: var(--text-muted);
 }
+.nft-dia-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    margin-left: 58px;
+}
 
+.nft-dia-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 40px;
+}
+
+.nft-dia-img {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 6px;
+}
+#change-pic-btn {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+
+}
+.nft-dia-text {
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: center;
+}
 .buy-btn {
     background-color: var(--secondary-color);
     color: white;

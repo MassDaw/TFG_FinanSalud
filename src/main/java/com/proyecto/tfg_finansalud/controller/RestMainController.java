@@ -12,6 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.proyecto.tfg_finansalud.entities.Usuario;
+import com.proyecto.tfg_finansalud.repositories.UserRepository;
+import com.proyecto.tfg_finansalud.services.UserService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -48,15 +55,43 @@ public class RestMainController {
     @RequestMapping("/user")
     public class UserController {
         private final UserService userService;
+        private final UserRepository userRepository;
 
-        public UserController(UserService userService) {
+        public UserController(UserService userService, UserRepository userRepository) {
             this.userService = userService;
+            this.userRepository = userRepository;
         }
 
         @GetMapping("/me")
-        public Map<String, String> getCurrentUser() {
+        public ResponseEntity<?> getCurrentUser() {
+            try {
+                String username = userService.getAuthenticatedUsername();
+                Usuario user = userRepository.findByUsername(username)
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+                String profileImageUrl = user.getProfileImageUrl() != null ? user.getProfileImageUrl() : "/uploads/profile-pics/profile-pic.jpg";
+
+                return ResponseEntity.ok(Map.of(
+                        "username", username,
+                        "profileImageUrl", profileImageUrl
+                ));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("error", "Error al obtener el usuario: " + e.getMessage()));
+            }
+        }
+    }
+    @PostMapping("/user/upload-profile-pic")
+    public ResponseEntity<?> uploadProfilePic(@RequestParam("file") MultipartFile file) {
+        try {
             String username = userService.getAuthenticatedUsername();
-            return Map.of("username", username);
+            String imageUrl = userService.saveProfileImage(file);
+            userService.updateProfileImage(username, imageUrl);
+
+            return ResponseEntity.ok(Map.of("success", true, "imageUrl", imageUrl));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Error al subir la imagen: " + e.getMessage()));
         }
     }
 

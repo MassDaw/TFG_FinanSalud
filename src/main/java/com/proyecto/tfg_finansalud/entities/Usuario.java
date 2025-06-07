@@ -24,6 +24,8 @@ public class Usuario {
     private String email;
     private String password;
     private LocalDate registrationDate;
+    private String profileImageUrl; // Asegúrate de que este atributo exista
+
 
     @Builder.Default
     Set<Profile> profiles = new HashSet<>();

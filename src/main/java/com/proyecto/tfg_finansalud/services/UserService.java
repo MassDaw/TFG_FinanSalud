@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -22,6 +23,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
 
 import java.util.UUID;
 
@@ -205,5 +210,18 @@ public class UserService {
         if (result.getModifiedCount() == 0) {
             throw new Exception("Usuario no encontrado o no modificado");
         }
+    }
+    public String saveProfileImage(MultipartFile file) throws IOException {
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        Path filePath = Paths.get("uploads/profile-pics", fileName);
+        Files.createDirectories(filePath.getParent());
+        Files.write(filePath, file.getBytes());
+        return "/uploads/profile-pics/" + fileName; // URL para acceder a la imagen
+    }
+    public void updateProfileImage(String username, String imageUrl) {
+        Usuario user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        user.setProfileImageUrl(imageUrl);
+        userRepository.save(user);
     }
 }
