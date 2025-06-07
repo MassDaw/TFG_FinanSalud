@@ -1,202 +1,96 @@
 document.addEventListener("DOMContentLoaded", () => {
-
     // Actualizar fecha actual
     const monthNames = [
-        "Enero",
-        "Febrero",
-        "Marzo",
-        "Abril",
-        "Mayo",
-        "Junio",
-        "Julio",
-        "Agosto",
-        "Septiembre",
-        "Octubre",
-        "Noviembre",
-        "Diciembre",
-    ]
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+    const currentDate = new Date();
+    const currentMonthYear = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    document.getElementById("current-month").textContent = currentMonthYear;
 
-    const currentDate = new Date()
-    const currentMonthYear = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`
-    document.getElementById("current-month").textContent = currentMonthYear
+    // Obtener datos de la API y calcular totales
+    fetch('/item/currentMonth')
+        .then(response => response.json())
+        .then(data => {
+            let totalIngresos = 0;
+            let totalGastos = 0;
 
-    // Datos financieros simulados
-    const financialData = {
-        monthly: {
-            labels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-            incomes: [3200, 3400, 3850, 3500, 3600, 3900, 3700, 3800, 0, 0, 0, 0],
-            expenses: [1200, 1350, 1399.25, 1300, 1450, 1500, 1400, 1550, 0, 0, 0, 0],
-        },
-        quarterly: {
-            labels: ["Q1", "Q2", "Q3", "Q4"],
-            incomes: [10450, 11000, 11300, 0],
-            expenses: [3949.25, 4250, 4350, 0],
-        },
-        yearly: {
-            labels: ["2022", "2023", "2024", "2025"],
-            incomes: [38000, 40500, 42000, 10450],
-            expenses: [15000, 16200, 17500, 3949.25],
-        },
-    }
+            // Recorrer las categorías y sumar ingresos y gastos
+            for (const items of Object.values(data)) {
+                items.forEach(item => {
+                    if (item.income) {
+                        totalIngresos += item.itemPrice;
+                    } else {
+                        totalGastos += item.itemPrice;
+                    }
+                });
+            }
 
-    // Configurar el gráfico
-    const ctx = document.getElementById("financial-chart").getContext("2d")
-    const financialChart = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: financialData.monthly.labels,
-            datasets: [
-                {
-                    label: "Ingresos",
-                    data: financialData.monthly.incomes,
-                    backgroundColor: "#6c5ce7",
-                    borderColor: "#6c5ce7",
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    barPercentage: 0.6,
-                    categoryPercentage: 0.7,
-                },
-                {
-                    label: "Gastos",
-                    data: financialData.monthly.expenses,
-                    backgroundColor: "#e2d9ff",
-                    borderColor: "#e2d9ff",
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    barPercentage: 0.6,
-                    categoryPercentage: 0.7,
-                },
-            ],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                },
-                tooltip: {
-                    mode: "index",
-                    intersect: false,
-                    callbacks: {
-                        label: (context) => {
-                            let label = context.dataset.label || ""
-                            if (label) {
-                                label += ": "
-                            }
-                            if (context.parsed.y !== null) {
-                                label += new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(context.parsed.y)
-                            }
-                            return label
-                        },
-                    },
-                },
-            },
-            scales: {
-                x: {
-                    grid: {
-                        display: false,
-                    },
-                },
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: (value) => "€" + value,
-                    },
-                },
-            },
-        },
-    })
+            // Calcular balance total
+            const balanceTotal = totalIngresos - totalGastos;
 
-    // Cambiar periodo del gráfico
-    document.getElementById("period-selector").addEventListener("change", function () {
-        const period = this.value
-        updateChart(period)
-    })
-
-    function updateChart(period) {
-        financialChart.data.labels = financialData[period].labels
-        financialChart.data.datasets[0].data = financialData[period].incomes
-        financialChart.data.datasets[1].data = financialData[period].expenses
-        financialChart.update()
-    }
-
-    // Calcular porcentajes para las barras de progreso
-    function calcularPorcentajes() {
-        // Para ingresos
-        const ingresos = [2800, 450, 320, 150, 130] // Valores de ingresos
-        const maxIngreso = Math.max(...ingresos)
-
-        const barrasIngresos = document.querySelectorAll("#income-tab .progress")
-        barrasIngresos.forEach((barra, index) => {
-            const porcentaje = (ingresos[index] / maxIngreso) * 100
-            barra.style.width = `${porcentaje}%`
+            // Actualizar los valores en el DOM
+            document.getElementById("ingresosTotales").textContent = `€${totalIngresos.toFixed(2)}`;
+            document.getElementById("gastosTotales").textContent = `€${totalGastos.toFixed(2)}`;
+            document.getElementById("balanceTotal").textContent = `€${balanceTotal.toFixed(2)}`;
         })
+        .catch(error => {
+            console.error("Error al cargar los datos:", error);
+        });
 
-        // Para gastos
-        const gastos = [850, 125.5, 85.3, 65.99, 68.75, 45, 24, 89.95, 44.99] // Valores de gastos
-        const maxGasto = Math.max(...gastos)
+    // Cargar transacciones recientes
+    fetch('/item/currentMonth')
+        .then(response => response.json())
+        .then(data => {
+            const allItems = [];
 
-        const barrasGastos = document.querySelectorAll("#expense-tab .progress")
-        barrasGastos.forEach((barra, index) => {
-            const porcentaje = (gastos[index] / maxGasto) * 100
-            barra.style.width = `${porcentaje}%`
+            // Recorre cada categoría y sus ítems
+            for (const [category, items] of Object.entries(data)) {
+                items.forEach(item => {
+                    item.category = category; // Agrega la categoría a cada item
+                    allItems.push(item);
+                });
+            }
+
+            const container = document.getElementById('recent-transactions-list');
+            container.innerHTML = '';
+
+            const filteredItems = allItems.filter(item => item && item.itemName && item.itemPrice !== undefined);
+
+            if (filteredItems.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-info-circle mb-2"></i>
+                        <p>No hay transacciones recientes</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredItems.slice(0, 5).forEach(item => {
+                container.innerHTML += `
+                    <div class="list-group-item d-flex align-items-center py-3 px-0">
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">${item.itemName}</h6>
+                                    <p class="text-muted small mb-0">${item.category} ${item.itemDescription ? `– ${item.itemDescription}` : ''}</p>
+                                </div>
+                                <div class="fw-bold">€${parseFloat(item.itemPrice).toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
         })
-    }
-
-
-    // Llamar a la función cuando se cargue la página
-    calcularPorcentajes()
-
-    // Cambiar entre pestañas de ingresos y g   astos
-    const tabButtons = document.querySelectorAll(".tab-btn")
-    const tabContents = document.querySelectorAll(".tab-content")
-
-    tabButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            // Remover clase active de todos los botones y contenidos
-            tabButtons.forEach((btn) => btn.classList.remove("active"))
-            tabContents.forEach((content) => content.classList.remove("active"))
-
-            // Añadir clase active al botón clickeado
-            button.classList.add("active")
-
-            // Mostrar el contenido correspondiente
-            const tabId = button.getAttribute("data-tab")
-            document.getElementById(`${tabId}-tab`).classList.add("active")
-        })
-    })
-
-    // Animación para las tarjetas de resumen
-    const summaryCards = document.querySelectorAll(".summary-card")
-    summaryCards.forEach((card, index) => {
-        setTimeout(() => {
-            card.style.opacity = "1"
-            card.style.transform = "translateY(0)"
-        }, 100 * index)
-    })
-
-    // Animación para las transacciones
-    const transactionItems = document.querySelectorAll(".transaction-item")
-    transactionItems.forEach((item, index) => {
-        setTimeout(() => {
-            item.style.opacity = "1"
-            item.style.transform = "translateX(0)"
-        }, 100 * index)
-    })
-
-    // Inicializar estilos de animación
-    summaryCards.forEach((card) => {
-        card.style.opacity = "0"
-        card.style.transform = "translateY(20px)"
-        card.style.transition = "opacity 0.5s ease, transform 0.5s ease"
-    })
-
-    transactionItems.forEach((item) => {
-        item.style.opacity = "0"
-        item.style.transform = "translateX(20px)"
-        item.style.transition = "opacity 0.5s ease, transform 0.5s ease"
-    })
-
-})
-
+        .catch(error => {
+            console.error('Error al cargar transacciones:', error);
+            const container = document.getElementById('recent-transactions-list');
+            container.innerHTML = `
+                <div class="text-center text-muted py-3">
+                    <i class="fas fa-exclamation-circle mb-2"></i>
+                    <p>No se pudieron cargar las transacciones</p>
+                </div>
+            `;
+        });
+});
