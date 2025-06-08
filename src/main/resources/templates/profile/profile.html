@@ -126,14 +126,14 @@
 
 <script>
     // Cargar el header dinámicamente
+    // Cargar el header dinámicamente
     fetch("/header")
         .then((response) => response.text())
         .then((data) => {
             document.getElementById("header-placeholder").innerHTML = data;
-            document.getElementById("page-title").textContent =
-                "Tus activos financieros";
+            document.getElementById("page-title").textContent = "Perfil de usuario";
             document.getElementById("page-subtitle").textContent =
-                "Gestiona tus inversiones";
+                "Todo en un solo lugar";
 
             const now = new Date();
             const options = { month: "long", year: "numeric" };

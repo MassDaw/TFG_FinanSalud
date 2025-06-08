@@ -1630,7 +1630,37 @@ select:focus {
 .sidebar .nav-link span {
     font-size: 0.85rem;
 }
+.email-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+    margin: 0.5rem 0;
+}
 
+.profile-email {
+    margin: 0;
+    padding: 0;
+}
+
+.edit-email-btn {
+    padding: 0;
+    color: #0d6efd;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-email-btn:hover {
+    color: #0b5ed7;
+    background: none;
+}
+
+.edit-email-btn i {
+    font-size: 1rem;
+}
 
 @media (max-width: 768px) {
 
