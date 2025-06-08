@@ -1661,7 +1661,25 @@ select:focus {
 .edit-email-btn i {
     font-size: 1rem;
 }
+.user-profile-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+}
 
+.nav-profile-pic {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--white);
+}
+
+#nav-username {
+    color: var(--white);
+    font-weight: 500;
+}
 @media (max-width: 768px) {
 
     .sidebar {
