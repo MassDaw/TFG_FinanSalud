@@ -231,4 +231,10 @@ public class UserService {
         user.setProfileImageUrl(imageUrl);
         userRepository.save(user);
     }
+    public void updateEmail(String username, String newEmail) {
+        Usuario user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        user.setEmail(newEmail);
+        userRepository.save(user);
+    }
 }

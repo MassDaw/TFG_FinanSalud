@@ -83,42 +83,32 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        cryptoTableBody.parentElement.innerHTML = `
-    <thead>
+        cryptoTableBody.innerHTML = filteredAssets.map(asset => `
         <tr>
-            <th class="text-left">Activo</th>
-            <th class="text-right">Precio</th>
-            <th class="text-center">Comprar</th>
-        </tr>
-    </thead>
-    <tbody id="crypto-table-body">
-        ${filteredAssets.map(asset => `
-            <tr>
-                <td class="text-left">
-                    <div class="asset-name-container">
-                        <i class="fas fa-star favorite-star ${asset.isFavorite ? 'active' : ''}" data-id="${asset.id}"></i>
-                        <div class="asset-name">
-                            <div>${asset.name}</div>
-                            <div class="asset-symbol">${asset.symbol}</div>
-                        </div>
+            <td class="text-left">
+                <div class="asset-name-container">
+                    <i class="fas fa-star favorite-star ${asset.isFavorite ? 'active' : ''}" data-id="${asset.id}"></i>
+                    <div class="asset-name">
+                        <div>${asset.name}</div>
+                        <div class="asset-symbol">${asset.symbol}</div>
                     </div>
-                </td>
-<td class="text-center">
-    <div class="asset-price-container">
-        <div>${asset.price}</div>
-        <div class="asset-volume">Vol: ${asset.volume}</div>
-    </div>
-</td>
-                <td class="text-center">
-                    <button class="buy-btn" onclick="window.location.href='https://www.binance.com/es/trade/${asset.symbol}_EUR?type=spot'">
-                        Comprar
-                    </button>
-                </td>
-            </tr>
-        `).join('')}
-    </tbody>
-`;
-        // Agregar listeners para los favoritos
+                </div>
+            </td>
+            <td class="text-center">
+                <div class="asset-price-container">
+                    <div>${asset.price}</div>
+                    <div class="asset-volume">Vol: ${asset.volume}</div>
+                </div>
+            </td>
+            <td class="text-center">
+                <button class="buy-btn" onclick="window.location.href='https://www.binance.com/es/trade/${asset.symbol}_EUR?type=spot'">
+                    Comprar
+                </button>
+            </td>
+        </tr>
+    `).join('');
+
+        // Reasignar eventos a las estrellas de favoritos
         cryptoTableBody.querySelectorAll('.favorite-star').forEach(star => {
             star.addEventListener('click', (e) => {
                 e.stopPropagation();

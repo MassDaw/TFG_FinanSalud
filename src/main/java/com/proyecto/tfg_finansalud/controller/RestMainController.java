@@ -51,6 +51,29 @@ public class RestMainController {
         }
 
     }
+    @PostMapping("/user/update-email")
+    public ResponseEntity<?> updateEmail(@RequestBody Map<String, String> payload) {
+        try {
+            String username = userService.getAuthenticatedUsername();
+            String newEmail = payload.get("email");
+
+            if (newEmail == null || newEmail.trim().isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("success", false, "message", "El correo electrónico no puede estar vacío"));
+            }
+
+            userService.updateEmail(username, newEmail);
+
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "Correo electrónico actualizado correctamente",
+                    "email", newEmail
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Error al actualizar el correo: " + e.getMessage()));
+        }
+    }
     @RestController
     @RequestMapping("/user")
     public class UserController {
@@ -69,10 +92,12 @@ public class RestMainController {
                 Usuario user = userRepository.findByUsername(username)
                         .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-                String profileImageUrl = user.getProfileImageUrl() != null ? user.getProfileImageUrl() : "/uploads/profile-pics/profile-pic.jpg";
+                String profileImageUrl = user.getProfileImageUrl() != null ?
+                        user.getProfileImageUrl() : "/uploads/profile-pics/profile-pic.jpg";
 
                 return ResponseEntity.ok(Map.of(
                         "username", username,
+                        "email", user.getEmail(),
                         "profileImageUrl", profileImageUrl
                 ));
             } catch (Exception e) {

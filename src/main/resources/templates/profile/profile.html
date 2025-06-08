@@ -1,14 +1,20 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinanSalud - Perfil</title>
 
-    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/theme.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
 </head>
 <body class="bg-light">
 <div id="header-placeholder"></div>
@@ -17,12 +23,29 @@
         <!-- Profile Section -->
         <div class="card profile-card">
             <div class="profile-image">
-                <img id="profile-pic" src="/uploads/profile-pics/profile-pic.jpg" alt="Foto de perfil" class="profile-pic">                <input type="file" id="upload-profile-pic" accept="image/*" style="display: none;">
+                <img
+                        id="profile-pic"
+                        src="/uploads/profile-pics/profile-pic.jpg"
+                        alt="Foto de perfil"
+                        class="profile-pic"
+                />
+                <input
+                        type="file"
+                        id="upload-profile-pic"
+                        accept="image/*"
+                        style="display: none"
+                />
             </div>
-            <button class="btn btn-secondary mt-2" id="change-pic-btn">Cambiar imagen</button>
+            <button class="btn btn-secondary mt-2" id="change-pic-btn">
+                Cambiar imagen
+            </button>
             <h2 class="profile-name" id="profile-username">Cargando...</h2>
-            <p class="profile-email">anabombardini@gmail.com</p>
-        </div>
+            <div class="email-container">
+                <p class="profile-email" id="profile-email">Cargando...</p>
+                <button class="btn btn-link edit-email-btn" id="edit-email-btn">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </div>        </div>
 
         <!-- Cards Section -->
         <div class="card cards-card">
@@ -43,7 +66,8 @@
                 </div>
                 <button class="nav-btn next-btn">&gt;</button>
             </div>
-            <button class="btn btn-primary w-50 mx-auto d-block">Añadir</button>        </div>
+            <button class="btn btn-primary w-50 mx-auto d-block">Añadir</button>
+        </div>
 
         <!-- Information Section -->
         <div class="card info-card">
@@ -51,19 +75,19 @@
             <div class="info-list">
                 <div class="info-item">
                     <span class="info-label">Presupuesto del mes:</span>
-                    <span class="info-value">€1350,32</span>
+                    <span class="info-value" id="budget-total">Cargando...</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Ingresos totales:</span>
-                    <span class="info-value">€1109,15</span>
+                    <span class="info-value" id="ingresos-total">Cargando...</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Gastos totales:</span>
-                    <span class="info-value">€759,91</span>
+                    <span class="info-value" id="gastos-total">Cargando...</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Ahorro total:</span>
-                    <span class="info-value">€759,91</span>
+                    <span class="info-value" id="ahorro-total">Cargando...</span>
                 </div>
             </div>
         </div>
@@ -74,124 +98,231 @@
             <div class="analysis-content">
                 <div class="analysis-item">
                     <h3 class="analysis-title">Tasa de ahorro</h3>
-                    <p class="analysis-value">€759,91 / €1109,15 = 68.5%</p>
+                    <p class="analysis-value" id="tasa-ahorro">Calculando...</p>
                 </div>
                 <div class="analysis-item">
                     <h3 class="analysis-title">Gastos vs. presupuesto</h3>
-                    <p class="analysis-value">€759,91 / €1350,32 = 56.3%</p>
+                    <p class="analysis-value" id="gastos-vs-presupuesto">Calculando...</p>
                 </div>
-
             </div>
         </div>
 
         <!-- Chart Section -->
         <div class="card chart-card">
             <h2 class="section-title">Recomendación financiera</h2>
-            <button id="btn-recomendacion" class="btn btn-success mb-2">Obtener recomendación</button>
-            <div id="recomendacion-financiera" class="alert alert-info mt-2" style="display:none;"></div>
+            <button id="btn-recomendacion" class="btn btn-success mb-2">
+                Obtener recomendación
+            </button>
+            <div
+                    id="recomendacion-financiera"
+                    class="alert alert-info mt-2"
+                    style="display: none"
+            ></div>
         </div>
     </div>
 </div>
 
-
 <div id="navigation-container"></div>
+
 <script>
     // Cargar el header dinámicamente
-    fetch('/header')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('header-placeholder').innerHTML = data;
-            // Actualizar título y subtítulo después de cargar el header
-            document.getElementById('page-title').textContent = 'Tus activos financieros';
-            document.getElementById('page-subtitle').textContent = 'Gestiona tus inversiones';
+    fetch("/header")
+        .then((response) => response.text())
+        .then((data) => {
+            document.getElementById("header-placeholder").innerHTML = data;
+            document.getElementById("page-title").textContent =
+                "Tus activos financieros";
+            document.getElementById("page-subtitle").textContent =
+                "Gestiona tus inversiones";
 
-            // Inicializar el script del header después de que se haya cargado
             const now = new Date();
-            const options = { month: 'long', year: 'numeric' };
-            const currentMonthElement = document.getElementById('current-month');
+            const options = { month: "long", year: "numeric" };
+            const currentMonthElement = document.getElementById("current-month");
             if (currentMonthElement) {
-                currentMonthElement.textContent = now.toLocaleDateString('es-ES', options)
-                    .replace(/^\w/, c => c.toUpperCase());
+                currentMonthElement.textContent = now
+                    .toLocaleDateString("es-ES", options)
+                    .replace(/^\w/, (c) => c.toUpperCase());
             }
         })
-        .catch(error => console.error('Error al cargar el header:', error));
+        .catch((error) => console.error("Error al cargar el header:", error));
 </script>
-<script>
-    document.getElementById('btn-recomendacion').addEventListener('click', function() {
-        const recomendacionDiv = document.getElementById('recomendacion-financiera');
-        recomendacionDiv.style.display = 'block';
-        recomendacionDiv.textContent = 'Cargando recomendación...';
 
-        fetch('/chat/finanzas')
-            .then(response => response.json())
-            .then(data => {
-                if (data.response) {
-                    recomendacionDiv.textContent = data.response;
-                } else {
-                    recomendacionDiv.textContent = 'No se pudo obtener la recomendación.';
-                }
-            })
-            .catch(() => {
-                recomendacionDiv.textContent = 'Error al conectar con el servidor.';
-            });
-    });
-</script>
 <script>
-    fetch('/user/me')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('profile-username').textContent = data.username;
-            const profilePic = document.getElementById('profile-pic');
+    document
+        .getElementById("btn-recomendacion")
+        .addEventListener("click", function () {
+            const recomendacionDiv = document.getElementById(
+                "recomendacion-financiera"
+            );
+            recomendacionDiv.style.display = "block";
+            recomendacionDiv.textContent = "Cargando recomendación...";
+
+            fetch("/chat/finanzas")
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.response) {
+                        recomendacionDiv.textContent = data.response;
+                    } else {
+                        recomendacionDiv.textContent =
+                            "No se pudo obtener la recomendación.";
+                    }
+                })
+                .catch(() => {
+                    recomendacionDiv.textContent =
+                        "Error al conectar con el servidor.";
+                });
+        });
+</script>
+
+<script>
+    fetch("/user/me")
+        .then((response) => response.json())
+        .then((data) => {
+            document.getElementById("profile-username").textContent =
+                data.username;
+            const profilePic = document.getElementById("profile-pic");
             if (data.profileImageUrl) {
-                profilePic.src = data.profileImageUrl + '?t=' + new Date().getTime();
+                profilePic.src =
+                    data.profileImageUrl + "?t=" + new Date().getTime();
             }
         })
         .catch(() => {
-            document.getElementById('profile-username').textContent = 'Usuario';
+            document.getElementById("profile-username").textContent = "Usuario";
         });
 </script>
+
 <script>
     // Cargar el componente de navegación
-    fetch('/navigation-bar')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('navigation-container').innerHTML = data;
+    fetch("/navigation-bar")
+        .then((response) => response.text())
+        .then((data) => {
+            document.getElementById("navigation-container").innerHTML = data;
         });
 </script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const profilePic = document.getElementById('profile-pic');
-        const uploadInput = document.getElementById('upload-profile-pic');
-        const changePicBtn = document.getElementById('change-pic-btn');
 
-        changePicBtn.addEventListener('click', () => {
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const profilePic = document.getElementById("profile-pic");
+        const uploadInput = document.getElementById("upload-profile-pic");
+        const changePicBtn = document.getElementById("change-pic-btn");
+
+        changePicBtn.addEventListener("click", () => {
             uploadInput.click();
         });
 
-        uploadInput.addEventListener('change', (event) => {
+        uploadInput.addEventListener("change", (event) => {
             const file = event.target.files[0];
             if (file) {
                 const formData = new FormData();
-                formData.append('file', file);
+                formData.append("file", file);
 
-                fetch('/api/user/upload-profile-pic', {
-                    method: 'POST',
-                    body: formData
+                fetch("/api/user/upload-profile-pic", {
+                    method: "POST",
+                    body: formData,
                 })
-                    .then(response => response.json())
-                    .then(data => {
+                    .then((response) => response.json())
+                    .then((data) => {
                         if (data.success) {
-                            profilePic.src = data.imageUrl + '?t=' + new Date().getTime();
+                            profilePic.src = data.imageUrl + "?t=" + new Date().getTime();
                         } else {
-                            alert('Error al subir la imagen: ' + data.message);
+                            alert("Error al subir la imagen: " + data.message);
                         }
                     })
                     .catch(() => {
-                        alert('Error al conectar con el servidor.');
+                        alert("Error al conectar con el servidor.");
                     });
             }
         });
     });
+</script>
+
+<script>
+    // Cargar todos los datos financieros
+    Promise.all([
+        fetch('/item/currentMonth').then(response => response.json()),
+        fetch('/budget/getAll').then(response => response.json())
+    ])
+        .then(([itemData, budgets]) => {
+            let totalIngresos = 0;
+            let totalGastos = 0;
+
+            // Calcular ingresos y gastos
+            for (const items of Object.values(itemData)) {
+                items.forEach(item => {
+                    if (item.income) {
+                        totalIngresos += item.itemPrice;
+                    } else {
+                        totalGastos += item.itemPrice;
+                    }
+                });
+            }
+
+            // Calcular totales
+            const ahorroTotal = totalIngresos - totalGastos;
+            const totalBudget = budgets.reduce((sum, budget) => sum + budget.budget, 0);
+
+            // Actualizar elementos básicos
+            document.getElementById('budget-total').textContent = `€${totalBudget.toFixed(2)}`;
+            document.getElementById('ingresos-total').textContent = `€${totalIngresos.toFixed(2)}`;
+            document.getElementById('gastos-total').textContent = `€${totalGastos.toFixed(2)}`;
+            document.getElementById('ahorro-total').textContent = `€${ahorroTotal.toFixed(2)}`;
+
+            // Calcular y mostrar análisis
+            const tasaAhorro = totalIngresos > 0 ? (ahorroTotal / totalIngresos * 100).toFixed(1) : 0;
+            const gastosVsPresupuesto = totalBudget > 0 ? (totalGastos / totalBudget * 100).toFixed(1) : 0;
+
+            document.getElementById('tasa-ahorro').textContent =
+                `€${ahorroTotal.toFixed(2)} / €${totalIngresos.toFixed(2)} = ${tasaAhorro}%`;
+            document.getElementById('gastos-vs-presupuesto').textContent =
+                `€${totalGastos.toFixed(2)} / €${totalBudget.toFixed(2)} = ${gastosVsPresupuesto}%`;
+        })
+        .catch(error => {
+            console.error('Error al cargar datos financieros:', error);
+            document.getElementById('budget-total').textContent = 'Error';
+            document.getElementById('ingresos-total').textContent = 'Error';
+            document.getElementById('gastos-total').textContent = 'Error';
+            document.getElementById('ahorro-total').textContent = 'Error';
+        });
+</script>
+<script>document.addEventListener("DOMContentLoaded", () => {
+    const emailElement = document.getElementById("profile-email");
+    const editEmailBtn = document.getElementById("edit-email-btn");
+
+    // Cargar email inicial
+    fetch("/user/me")
+        .then(response => response.json())
+        .then(data => {
+            emailElement.textContent = data.email || "No hay correo configurado";
+        });
+
+    editEmailBtn.addEventListener("click", () => {
+        const currentEmail = emailElement.textContent;
+        const newEmail = prompt("Introduce el nuevo correo electrónico:", currentEmail);
+
+        if (newEmail && newEmail !== currentEmail) {
+            fetch("/api/user/update-email", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email: newEmail })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        emailElement.textContent = data.email;
+                        alert("Correo electrónico actualizado correctamente");
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Error al actualizar el correo electrónico");
+                });
+        }
+    });
+});
 </script>
 </body>
 </html>
