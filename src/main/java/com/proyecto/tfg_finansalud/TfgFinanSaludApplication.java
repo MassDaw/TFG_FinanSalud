@@ -10,15 +10,40 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class TfgFinanSaludApplication {
 
     public static void main(String[] args) {
-        Dotenv dotenv = Dotenv.configure()
-                .directory(".")
-                .filename(".env")
-                .load();
+        // Cargar desde variables de entorno del sistema si existen
+        setSystemPropertyIfPresent("EMAIL_USERNAME");
+        setSystemPropertyIfPresent("EMAIL_PASSWORD");
+        setSystemPropertyIfPresent("MONGO_URI");
 
-        dotenv.entries().forEach(entry ->
-                System.setProperty(entry.getKey(), entry.getValue())
-        );
+        // Si alguna variable crítica no está definida, intenta cargar desde .env
+        if (System.getProperty("EMAIL_USERNAME") == null ||
+                System.getProperty("EMAIL_PASSWORD") == null ||
+                System.getProperty("MONGO_URI") == null) {
+            try {
+                Dotenv dotenv = Dotenv.configure()
+                        .directory(".")
+                        .filename(".env")
+                        .load();
+
+                dotenv.entries().forEach(entry ->
+                        System.setProperty(entry.getKey(), entry.getValue())
+                );
+                System.out.println("📄 Variables cargadas desde archivo .env");
+            } catch (Exception e) {
+                System.out.println("⚠️ No se pudo cargar el archivo .env: " + e.getMessage());
+            }
+        } else {
+            System.out.println("✅ Variables cargadas desde el entorno");
+        }
+
         SpringApplication.run(TfgFinanSaludApplication.class, args);
+    }
+
+    private static void setSystemPropertyIfPresent(String key) {
+        String value = System.getenv(key);
+        if (value != null) {
+            System.setProperty(key, value);
+        }
     }
 
 }
