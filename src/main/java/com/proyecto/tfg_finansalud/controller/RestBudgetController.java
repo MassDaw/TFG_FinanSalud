@@ -56,6 +56,7 @@ public class RestBudgetController {
             budgetService.save(budget);
             userService.userNewBudget(budget);
         }catch (Exception e){
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);

@@ -40,10 +40,10 @@ public class UserService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public void save(Usuario user) throws Exception {
+    public Usuario save(Usuario user) {
         Optional<Usuario> usuario = userRepository.findByUsername(user.getUsername());
         if (usuario.isPresent()) {
-            throw new Exception("Usuario ya existe");
+            System.out.println("El usuario ya existe");
         }
         
         // Establecer el estado de verificación como falso
@@ -59,7 +59,14 @@ public class UserService {
         tokenRepository.save(verificationToken);
         
         // Enviar email de verificación
-        emailService.sendVerificationEmail(user.getEmail(), token);
+        try{
+            emailService.sendVerificationEmail(user.getEmail(), token);
+        }catch (Exception e){
+            System.out.println("Error al enviar el email de verificación: " + e.getMessage());
+        }
+
+
+        return user; // Retorna el usuario guardado
     }
 
     public boolean verifyEmail(String token) {

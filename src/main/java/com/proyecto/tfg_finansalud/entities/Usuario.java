@@ -37,4 +37,7 @@ public class Usuario {
     private List<Income> income = new ArrayList<>();
     private boolean emailVerified;
 
+    @DBRef(lazy = false)
+    private List<Token> tokens = new ArrayList<>();
+
 }
