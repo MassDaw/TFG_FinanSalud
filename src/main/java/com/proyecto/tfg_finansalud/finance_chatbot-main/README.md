@@ -1,3 +1,4 @@
+
 # Chatbot API - Finanzas Personales con Gemini
 
 Esta aplicación es un chatbot y API REST para dar consejos financieros personalizados usando la API gratuita de Gemini (Google AI). Puedes interactuar por consola o consumir la API desde un frontend.

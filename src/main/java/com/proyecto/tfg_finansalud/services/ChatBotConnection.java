@@ -25,7 +25,7 @@ public class ChatBotConnection {
 
     private final WebClient webClient;
 
-    public Mono<String> sendToApi(Double ingresos, Double total, Map<String, Double> gastos) {
+    public Mono<String> sendToApi(Double ingresos, Double total, Map<String, Double> gastos, String url) {
         Map<String, Object> datosFinancieros = new HashMap<>();
 
         datosFinancieros.put("ingresos", ingresos);//ingresos
@@ -33,7 +33,7 @@ public class ChatBotConnection {
         datosFinancieros.put("gastos_por_categoria", gastos);
 
         return webClient.post()
-                .uri("http://localhost:8008/api/chat/finanzas")
+                .uri( url + "/api/chat/finanzas")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(datosFinancieros)
                 .retrieve()

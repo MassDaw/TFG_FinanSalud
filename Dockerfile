@@ -1,14 +1,12 @@
-# Usamos la imagen base de OpenJDK 21 (asegúrate de que esta imagen sea compatible con tu aplicación)
-FROM eclipse-temurin:21-jdk-jammy
-
-# Establecemos el directorio de trabajo dentro del contenedor
+# Etapa 1: Build del jar con Maven y Java 21
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Copiamos el archivo JAR de la aplicación al contenedor
-COPY target/finanSalud-0.0.1-SNAPSHOT.jar app.jar
-
-# Exponemos el puerto en el que Spring Boot ejecutará el servicio (por defecto 8080)
-EXPOSE 8080
-
-# Comando para ejecutar la aplicación Spring Boot
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Etapa 2: Imagen final con Java 21
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]

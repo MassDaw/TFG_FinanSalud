@@ -21,7 +21,7 @@ public class ChatController {
     private final ChatBotConnection chatService;
     private final UserService userService;
 
-    @Value("${python.api.url}")
+    @Value("${python.api.url.chatBot}")
     private String pythonApiUrl;
 
 
@@ -33,7 +33,7 @@ public class ChatController {
                 .sum();
         Map<String, Double> map = listaBudget.stream().collect(Collectors.toMap(Budget::getName, Budget::getBudgetCount));
 
-        String response = chatService.sendToApi(userService.getIncome(), total, map).block();
+        String response = chatService.sendToApi(userService.getIncome(), total, map, pythonApiUrl).block();
         System.out.println(response);
         return ResponseEntity.ok(response);
     }
