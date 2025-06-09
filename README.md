@@ -453,11 +453,11 @@ Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
 
 ## 👥 Autores
 
-- **Tu Nombre** - *Desarrollo completo* - [TuGitHub](https://github.com/tu-usuario)
+- **Massimiliano Cirino** - **Paolo Idrugo**
 
 ## 🙏 Agradecimientos
 
-- Spring Boot team por el excelente framework
+- Spring Boot team por el excelente framework (no)
 - Google por la API de Gemini
 - MongoDB por la base de datos NoSQL
 - Bootstrap para los componentes UI
