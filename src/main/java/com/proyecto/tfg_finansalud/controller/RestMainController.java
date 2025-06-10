@@ -51,6 +51,7 @@ public class RestMainController {
         }
 
     }
+
     @PostMapping("/user/update-email")
     public ResponseEntity<?> updateEmail(@RequestBody Map<String, String> payload) {
         try {
@@ -74,38 +75,7 @@ public class RestMainController {
                     .body(Map.of("success", false, "message", "Error al actualizar el correo: " + e.getMessage()));
         }
     }
-    @RestController
-    @RequestMapping("/user")
-    public class UserController {
-        private final UserService userService;
-        private final UserRepository userRepository;
 
-        public UserController(UserService userService, UserRepository userRepository) {
-            this.userService = userService;
-            this.userRepository = userRepository;
-        }
-
-        @GetMapping("/me")
-        public ResponseEntity<?> getCurrentUser() {
-            try {
-                String username = userService.getAuthenticatedUsername();
-                Usuario user = userRepository.findByUsername(username)
-                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-                String profileImageUrl = user.getProfileImageUrl() != null ?
-                        user.getProfileImageUrl() : "/uploads/profile-pics/profile-pic.jpg";
-
-                return ResponseEntity.ok(Map.of(
-                        "username", username,
-                        "email", user.getEmail(),
-                        "profileImageUrl", profileImageUrl
-                ));
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(Map.of("error", "Error al obtener el usuario: " + e.getMessage()));
-            }
-        }
-    }
     @PostMapping("/user/upload-profile-pic")
     public ResponseEntity<?> uploadProfilePic(@RequestParam("file") MultipartFile file) {
         try {
@@ -119,6 +89,54 @@ public class RestMainController {
                     .body(Map.of("success", false, "message", "Error al subir la imagen: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/uploads/profile-pics/{imageURL}")
+    public ResponseEntity<?> getImage(@PathVariable("imageURL") String URLfile) {
+        try {
+            MultipartFile filee = userService.getProfileImageAsMultipartFile(URLfile);
+
+            return ResponseEntity.ok(Map.of("success", true, "image", filee));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Error al cargar la imagen: " + e.getMessage()));
+        }
+
+
+        @RestController
+        @RequestMapping("/user")
+         class UserController {
+            private final UserService userService;
+            private final UserRepository userRepository;
+
+            public UserController(UserService userService, UserRepository userRepository) {
+                this.userService = userService;
+                this.userRepository = userRepository;
+            }
+
+            @GetMapping("/me")
+            public ResponseEntity<?> getCurrentUser() {
+                try {
+                    String username = userService.getAuthenticatedUsername();
+                    Usuario user = userRepository.findByUsername(username)
+                            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+                    String profileImageUrl = user.getProfileImageUrl() != null ?
+                            user.getProfileImageUrl() : "/uploads/profile-pics/profile-pic.jpg";
+
+                    return ResponseEntity.ok(Map.of(
+                            "username", username,
+                            "email", user.getEmail(),
+                            "profileImageUrl", profileImageUrl
+                    ));
+                } catch (Exception e) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(Map.of("error", "Error al obtener el usuario: " + e.getMessage()));
+                }
+            }
+
+        }
+    }
+}
 
 //    @GetMapping("/allBudget")
 //    public ResponseEntity<?> getBudget() {
@@ -137,4 +155,3 @@ public class RestMainController {
 //        }
 //        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
 //    }
-}
