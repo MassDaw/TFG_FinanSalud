@@ -46,19 +46,19 @@ public class UserService {
         if (usuario.isPresent()) {
             System.out.println("El usuario ya existe");
         }
-        
+
         // Establecer el estado de verificación como falso
         user.setEmailVerified(false);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
+
         // Guardar el usuario
         userRepository.save(user);
-        
+
         // Crear token de verificación
         String token = generateVerificationToken();
         VerificationToken verificationToken = new VerificationToken(token, user.getId());
         tokenRepository.save(verificationToken);
-        
+
         // Enviar email de verificación
         try{
             emailService.sendVerificationEmail(user.getEmail(), token);
@@ -72,16 +72,16 @@ public class UserService {
 
     public boolean verifyEmail(String token) {
         Optional<VerificationToken> verificationToken = tokenRepository.findByToken(token);
-        
+
         if (verificationToken.isPresent() && !verificationToken.get().isExpired() && !verificationToken.get().isUsed()) {
             VerificationToken vToken = verificationToken.get();
             Optional<Usuario> user = userRepository.findById(vToken.getUserId());
-            
+
             if (user.isPresent()) {
                 Usuario usuario = user.get();
                 usuario.setEmailVerified(true);
                 userRepository.save(usuario);
-                
+
                 // Marcar el token como usado
                 vToken.setUsed(true);
                 tokenRepository.save(vToken);
@@ -94,7 +94,7 @@ public class UserService {
     private String generateVerificationToken() {
         return UUID.randomUUID().toString();
     }
-    
+
     // ... resto de los métodos existentes ...
     //Obtiene todos los presupuestos del usuario del MES EN CURSO
     public List<Budget> getBudget() {
@@ -219,17 +219,6 @@ public class UserService {
             throw new Exception("Usuario no encontrado o no modificado");
         }
     }
-    public MultipartFile getProfileImageAsMultipartFile(String fileName) throws IOException {
-        Path filePath = Paths.get("uploads/profile-pics", fileName);
-        byte[] fileContent = Files.readAllBytes(filePath);
-
-        return new MockMultipartFile(
-                fileName, // Original file name
-                fileName, // File name in the request
-                Files.probeContentType(filePath), // Content type
-                fileContent // File content
-        );
-    }
     public String saveProfileImage(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
         Path filePath = Paths.get("uploads/profile-pics", fileName);
@@ -248,5 +237,17 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         user.setEmail(newEmail);
         userRepository.save(user);
+    }
+
+    public MultipartFile getProfileImageAsMultipartFile(String fileName) throws IOException {
+        Path filePath = Paths.get("uploads/profile-pics", fileName);
+        byte[] fileContent = Files.readAllBytes(filePath);
+
+        return new MockMultipartFile(
+                fileName, // Original file name
+                fileName, // File name in the request
+                Files.probeContentType(filePath), // Content type
+                fileContent // File content
+        );
     }
 }

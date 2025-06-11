@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BudgetDTO {
+    private String id;
     private String name;
     private String description; //pc
     private Double budget;
